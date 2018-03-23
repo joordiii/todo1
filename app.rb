@@ -1,4 +1,5 @@
 require 'sinatra' 
+require "sinatra/reloader"
 require 'sequel' 
 require 'mysql2'
 require 'haml'
@@ -22,9 +23,9 @@ class Todo < Sinatra::Application # We inherit the Application class of the Sina
 =end
   configure do
     env = 'development'
-    #binding.pry
     var = YAML.load(File.open('config/database.yml'))
-    DB = Sequel.connect(YAML.load(File.open('config/database.yml'))[env])
+    @DB = Sequel.connect(YAML.load(File.open('config/database.yml'))[env])
+    #binding.pry
     #.connect(conn_string, opts = {}, &block) ⇒ Object
     #DB = Sequel.connect("mysql2://root:pass@mysql.getapp.docker/todo") 
     # This way we import our model files located in the models directory. 
@@ -33,12 +34,13 @@ class Todo < Sinatra::Application # We inherit the Application class of the Sina
   end 
 end 
 
-=begin before do # It checks the validity of the user's session. It will be invoked for every route  
+before do # It checks the validity of the user's session. It will be invoked for every route  
   if !['login', 'signup'].include?(request.path_info.split('/')[1]) && session[:user_id].nil?
-      redirect '/login'
+    #binding.pry
+    redirect '/login'
   end
 end 
-=end
+
 
 # When typing '/' or '' we get all lists into a variable called all_lists
 get '/?' do
@@ -56,6 +58,13 @@ post '/new/?' do
   list = List.new_list params[:name], params[:items], user
   redirect "/lists/#{list.id}"
 end
+
+get '/lists/:id' do
+  user = User.first(id: session[:user_id])
+  @list = List.first(id: params[:id])
+  haml :list_details
+end
+
 get '/edit/:id/?' do
   list = List.first(id: params[:id])
   can_edit = true
@@ -134,17 +143,6 @@ post '/signup/?' do
   User.create(name: params[:name], password: md5sum)
   redirect '/login'
 end 
-
-
-=begin post '/signup/?' do
-  User.create(name: params[:name], password: params[:password])
-  #binding.pry
-  haml :test
-  #p User
-  #p 'HolA'
-end  
-=end
-
 
 get '/login/?' do
   if session[:user_id].nil?

@@ -1,0 +1,4 @@
+%h1 "List #{@list.id}"
+
+- @list.items.each do |item|
+  = item.name
