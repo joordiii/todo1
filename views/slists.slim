@@ -1,0 +1,11 @@
+.cont
+  .list-gen
+    h1.lists-tit My Lists
+    .my-lists
+      - lists.each do |list|
+        .list_link
+          a href="lists/#{list.id}"
+            = list.name
+  .list-list
+    h2.list-tit List 
+    //p #{lists}

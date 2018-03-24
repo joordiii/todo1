@@ -1,5 +1,5 @@
 require 'sinatra' 
-require "sinatra/reloader"
+#require 'sinatra/reloader'
 require 'sequel' 
 require 'mysql2'
 require 'haml'
@@ -7,6 +7,7 @@ require 'pry'
 require 'pry-byebug' 
 require 'yaml'
 require 'digest'
+require 'slim'
 class Todo < Sinatra::Application # We inherit the Application class of the Sinatra Module
   # We can config every environment, if only this one is present it will work for all
   set :environment, :development #ENV['RACK_ENV']
@@ -46,12 +47,12 @@ end
 get '/?' do
   user = User.first(id: session[:user_id])
   #all_lists =  List.all
-  #binding.pry
   all_lists = List.association_join(:permissions).where(user_id: user.id)
-  haml :lists, locals: {lists: all_lists}
+  #binding.pry
+  slim :slists, locals: {lists: all_lists}
 end
 get '/new/?' do
-  haml :new_list
+  slim :snew_list
 end
 post '/new/?' do
   user = User.first(id: session[:user_id])
@@ -61,8 +62,9 @@ end
 
 get '/lists/:id' do
   user = User.first(id: session[:user_id])
+  all_lists = List.association_join(:permissions).where(user_id: user.id)
   @list = List.first(id: params[:id])
-  haml :list_details
+  slim :slist_details, locals: { lists: all_lists }
 end
 
 get '/edit/:id/?' do
@@ -131,7 +133,7 @@ end
 get '/signup/?' do
   User.count
   if session[:user_id].nil?
-    haml :signup
+    slim :ssignup
   else
     haml :error, locals: {error: 'Please log out first'}
   end
@@ -146,9 +148,9 @@ end
 
 get '/login/?' do
   if session[:user_id].nil?
-    haml :login
+    slim :slogin
   else
-    haml :error, locals: {error: 'Please log out first'}
+    slim :error, locals: {error: 'Please log out first'}
   end
 end
 
@@ -157,14 +159,14 @@ post '/login/?' do
   md5sum = Digest::MD5.hexdigest params[:password]
   user = User.first(name: params[:name], password: md5sum)
   if user.nil?
-    haml :error, locals: {error: 'Invalid login credentials'}
+    slim :error, locals: { error: 'Invalid login credentials' }
   else
     @name = params[:name]
     session[:message] = "Successfully stored the name #{@name}."
     session[:user_id] = user.id
     #binding.pry
-    #redirect '/'
-    redirect "/test?name=#{@name}"
+    redirect '/'
+    #redirect "/test?name=#{@name}"
   end
 end
 

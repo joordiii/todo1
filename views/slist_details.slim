@@ -1,0 +1,18 @@
+.cont
+  .list-gen
+    h1.lists-tit All my Lists
+    .my-lists
+      - lists.each do |list|
+        .list_link
+          a href="http://localhost:4567/lists/#{list.id}"
+            = list.name
+  .list-list
+    h2.list-tit "My #{@list.name} list" 
+    .my-items
+      - @list.items.each do |item|
+        .back-item
+          ul
+            li.color-item = item.name
+            .inner-item
+              ul
+                li.color-des = item.description
