@@ -8,6 +8,7 @@
             = list.name
   .list-list
     h2.list-tit "My #{@list.name} list" 
+    a href="http://localhost:4567/edit/#{@list.id}" Edit List
     .my-items
       - @list.items.each do |item|
         .back-item

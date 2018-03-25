@@ -60,6 +60,17 @@ post '/new/?' do
   redirect "/lists/#{list.id}"
 end
 
+post '/update/?' do
+  user = User.first(id: session[:user_id])
+  list_name = params[:lists][0]['name']
+  #binding.pry
+  #list_name = List.get(:name)
+  list_id = params[:lists][0][:id].to_i
+  list = List.edit_list list_id, list_name, params[:items], user
+  redirect "http://localhost:4567/lists/#{list_id}"
+  #redirect request.referer
+end
+
 get '/lists/:id' do
   user = User.first(id: session[:user_id])
   all_lists = List.association_join(:permissions).where(user_id: user.id)
@@ -82,7 +93,7 @@ get '/edit/:id/?' do
   end
 
   if can_edit
-    haml :edit_list, locals: {list: list}
+    slim :sedit_list, locals: {list: list}
   else
     haml :error, locals: {error: 'Invalid permissions'}
   end

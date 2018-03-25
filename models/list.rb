@@ -18,19 +18,28 @@ class List < Sequel::Model
   end
 
   def self.edit_list id, name, items, user
-    list = List.first(id: id)
+    #list = List.first(id: id)
+    #binding.pry  
+    list = List[id: id]
     list.name = name
-    list.updated_at = Time.now
+    #Uncomment the following line after:
+    #1.- adding line 9 in 002_create_list_table.rb -> It add the column updated_at
+    #list.updated_at = Time.now
+    #2.- then do a migration
     list.save
-
+    
     items.each do |item|
       if item[:deleted]
-        i = Item.first(item[:id]).destroy
+        #i = Item.first(item[:id]).destroy
+        i = Item[item[:id].to_i]
         next
       end
-      i = Item.first(item[:id])
+      #The Sequel::Model.[] is the easiest method to use to find a model 
+      #.. instance by its primary key value: ->Item[]<-
+      # http://sequel.jeremyevans.net/rdoc/files/doc/querying_rdoc.html
+      i = Item[item[:id].to_i]
       if i.nil?
-        Item.create(name: item[:name], description: item[:description], list: list, user: user,              created_at: Time.now, updated_at: Time.now)
+        Item.create(name: item[:name], description: item[:description], list: list, user: user, created_at: Time.now, updated_at: Time.now)
       else
         i.name = item[:name]
         i.description = item[:description]
