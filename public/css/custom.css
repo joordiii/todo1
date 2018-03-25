@@ -104,12 +104,71 @@ ul {
   padding: 8px;
 }
 
+/* Reset button styles */
+.reset-button {
+  color: #0C8734;/* !important;*/
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  overflow: visible;
+  background: transparent;
 
+  /* inherit font & color from ancestor */
+  color: inherit;
+  font: inherit;
 
-/* li { 
-  background: green; 
-} */
+  /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
+  line-height: normal;
 
-/* li:nth-child(odd) { 
-  background: red; 
-} */
+  /* Corrects font smoothing for webkit */
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+
+  /* Corrects inability to style clickable `input` types in iOS */
+  -webkit-appearance: none;
+}
+
+/* Remove excess padding and border in Firefox 4+ */
+&::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+input.reset-button1 {
+  background-color: springgreen;
+  border: 1px solid rgb(163, 250, 183);
+  border-radius: 2px;
+  padding: 3px 6px;
+}
+
+input.reset-button1:hover {
+  color: green;
+  background-color: #a3ffbf;
+  border-radius: 2px;
+  padding: 3px 6px;
+}
+
+input.reset-button2 {
+  background-color: rgb(254, 106, 106);
+  border: 1px solid rgb(255, 45, 45);
+  border-radius: 2px;
+  padding: 3px 6px;
+}
+
+input.reset-button2:hover {
+  color: red;
+  background-color: #fe9999;
+  border-radius: 2px;
+  padding: 3px 6px;
+}
+
+i.glyphicon.glyphicon-pencil {
+  color:springgreen;
+  padding-left: 10px;
+}
+
+i.glyphicon.glyphicon-minus {
+  color:rgb(254, 106, 106);
+  padding-left: 10px;
+}

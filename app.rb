@@ -71,6 +71,14 @@ post '/update/?' do
   #redirect request.referer
 end
 
+post '/delete/?' do
+  user = User.first(id: session[:user_id])
+  #binding.pry
+  list_id = params["list_id"].to_i
+  List.del list_id
+  redirect "http://localhost:4567/"
+end
+
 get '/lists/:id' do
   user = User.first(id: session[:user_id])
   all_lists = List.association_join(:permissions).where(user_id: user.id)

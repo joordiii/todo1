@@ -48,6 +48,16 @@ class List < Sequel::Model
       end
     end
   end
+
+  def self.del list_id
+    #binding.pry
+    # To be able to delete List, I have to delete first the Items and the Permissions
+    Item.where(:list_id => list_id).delete
+    Permission.where(:list_id => list_id).delete
+    List.where(:id => list_id).delete
+    #List[list_id].delete
+  end
+  
   def validate
     super
     validates_presence [:name, :created_at]
