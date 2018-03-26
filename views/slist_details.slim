@@ -11,11 +11,17 @@
     .my-items
       - @list.items.each do |item|
         .back-item
-          ul
-            li.color-item = item.name
-            .inner-item
+          .name-star
+            .left-name
               ul
-                li.color-des = item.description
+                li.color-item = item.name
+            .right-star
+              span.rating
+                label.lab for="rating-input-1-5" class="rating-star" Priority Item
+                input.check type="checkbox" class="rating-input" id="rating-input-1-5" name="rating-input-1"
+          .inner-item
+            ul
+              li.color-des = item.description
     form action="http://localhost:4567/edit/#{@list.id}"
       .button-div
         input.reset-button1 type="submit" value="Edit List"

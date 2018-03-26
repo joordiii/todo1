@@ -45,34 +45,34 @@ end
 
 # When typing '/' or '' we get all lists into a variable called all_lists
 get '/?' do
-  user = User.first(id: session[:user_id])
+  @user = User.first(id: session[:user_id])
   #all_lists =  List.all
-  all_lists = List.association_join(:permissions).where(user_id: user.id)
+  all_lists = List.association_join(:permissions).where(user_id: @user.id)
   #binding.pry
-  slim :slists, locals: {lists: all_lists}
+  slim :slists, locals: {lists: all_lists, user: @user}
 end
 get '/new/?' do
   slim :snew_list
 end
 post '/new/?' do
-  user = User.first(id: session[:user_id])
-  list = List.new_list params[:name], params[:items], user
+  @user = User.first(id: session[:user_id])
+  list = List.new_list params[:name], params[:items], @user
   redirect "/lists/#{list.id}"
 end
 
 post '/update/?' do
-  user = User.first(id: session[:user_id])
+  @user = User.first(id: session[:user_id])
   list_name = params[:lists][0]['name']
   #binding.pry
   #list_name = List.get(:name)
   list_id = params[:lists][0][:id].to_i
-  list = List.edit_list list_id, list_name, params[:items], user
+  list = List.edit_list list_id, list_name, params[:items], @user
   redirect "http://localhost:4567/lists/#{list_id}"
   #redirect request.referer
 end
 
 post '/delete/?' do
-  user = User.first(id: session[:user_id])
+  @user = User.first(id: session[:user_id])
   #binding.pry
   list_id = params["list_id"].to_i
   List.del list_id
@@ -80,21 +80,23 @@ post '/delete/?' do
 end
 
 get '/lists/:id' do
-  user = User.first(id: session[:user_id])
-  all_lists = List.association_join(:permissions).where(user_id: user.id)
+  @user = User.first(id: session[:user_id])
+  all_lists = List.association_join(:permissions).where(user_id: @user.id)
   @list = List.first(id: params[:id])
   slim :slist_details, locals: { lists: all_lists }
 end
 
 get '/edit/:id/?' do
   list = List.first(id: params[:id])
+  #list2 = List[params[:id]]
+  #binding.pry
   can_edit = true
 
   if list.nil?
     can_edit = false
   elsif list.shared_with == 'public'
-    user = User.first(id: session[:user_id])
-    permission = Permission.first(list: list, user: user)
+    @user = User.first(id: session[:user_id])
+    permission = Permission.first(list: list, user: @user)
     if permission.nil? or permission.permission_level == 'read_only'
       can_edit = false
     end
@@ -108,20 +110,20 @@ get '/edit/:id/?' do
 end
 # Here, we do not require the id to be in the URL as the POST data will have it.
 post '/edit/?' do
-  user = User.first(id: session[:user_id])
-  List.edit_list params[:id], params[:name], params[:items], user
+  @user = User.first(id: session[:user_id])
+  List.edit_list params[:id], params[:name], params[:items], @user
   redirect request.referer
 end 
 
 post '/permission/?' do
-  user = User.first(id: session[:user_id])
+  @user = User.first(id: session[:user_id])
   list = List.first(id: params[:id])
   can_change_permission = true
 
   if list.nil?
     can_change_permission = false
   elsif list.shared_with != 'public'
-    permission = Permission.first(list: list, user: user)
+    permission = Permission.first(list: list, user: @user)
     if permission.nil? or permission.permission_level == 'read_only'
       can_change_permission = false
     end
@@ -176,13 +178,13 @@ end
 post '/login/?' do
   # validate user credentials
   md5sum = Digest::MD5.hexdigest params[:password]
-  user = User.first(name: params[:name], password: md5sum)
-  if user.nil?
+  @user = User.first(name: params[:name], password: md5sum)
+  if @user.nil?
     slim :error, locals: { error: 'Invalid login credentials' }
   else
     @name = params[:name]
     session[:message] = "Successfully stored the name #{@name}."
-    session[:user_id] = user.id
+    session[:user_id] = @user.id
     #binding.pry
     redirect '/'
     #redirect "/test?name=#{@name}"
@@ -197,7 +199,7 @@ end
 get '/test' do
   p "putting user_id"
   p session[:user_id]
-  user = User.first(id: session[:user_id])
+  @user = User.first(id: session[:user_id])
   
   @message = session[:message]
   @name = params[:name]

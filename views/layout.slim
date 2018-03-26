@@ -37,9 +37,10 @@ html
                   a.navbar-brand href='/new'
                     i.glyphicon.glyphicon-plus 
                       span.text  New List
-                  a.navbar-brand href='/login'
-                    i.glyphicon.glyphicon-log-in 
-                      span.text  Login
+                  - if @user.nil?
+                    a.navbar-brand href='/login'
+                      i.glyphicon.glyphicon-log-in 
+                        span.text  Login
                   a.navbar-brand href='/logout'
                     i.glyphicon.glyphicon-log-out 
                       span.text  Logout

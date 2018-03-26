@@ -8,6 +8,7 @@ Sequel.migration do
       foreign_key :list_id, :lists, :null => false 
       DateTime :created_at 
       DateTime :updated_at 
+      Boolean :checked, :default => false
     end 
   end 
 end
