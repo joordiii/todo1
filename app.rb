@@ -71,6 +71,13 @@ post '/update/?' do
   #redirect request.referer
 end
 
+=begin post '/checked/?'
+  @user = User.first(id: session[:user_id])
+  list_checked = params[:lists][0]['checked']
+  list = List.edit_checked list_checked, @user
+end 
+=end
+
 post '/delete/?' do
   @user = User.first(id: session[:user_id])
   #binding.pry
@@ -87,6 +94,7 @@ get '/lists/:id' do
 end
 
 get '/edit/:id/?' do
+  @user = User.first(id: session[:user_id])
   list = List.first(id: params[:id])
   #list2 = List[params[:id]]
   #binding.pry

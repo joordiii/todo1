@@ -22,6 +22,12 @@
               input.form-control type="text" name="items[][name]" value="#{item.name}"
             .col-md-4
               input.form-control type="text" name="items[][description]" value="#{item.description}"
+            .col-md-4
+              label.check for="checkbox" Priority Item
+              - if item.checked == false
+                input type="checkbox" name="items[][checked]" checked=false
+              - else
+                input type="checkbox" name="items[][checked]" checked=true
         hr
         .form-group
           .col-md-2.col-md-offset-3

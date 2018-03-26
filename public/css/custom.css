@@ -204,5 +204,13 @@ i.glyphicon.glyphicon-minus {
   padding-right: 1vh;
 }
 
+label.check {
+  padding-right: 2vh;
+}
 
-
+.parent {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
