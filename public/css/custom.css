@@ -1,5 +1,5 @@
 * {
-  /*outline: 1px solid blue;*/
+  /* outline: 1px solid blue; */
   box-sizing: border-box;
   font-family: 'PT Sans', sans-serif;
   /*font-family: 'Roboto Mono', monospace;*/
@@ -201,6 +201,9 @@ i.glyphicon.glyphicon-minus {
 
 .right-name {
   color: rgb(255, 98, 0);
+  padding: 1vw 1vh 0 0;
+  font-weight: bold;
+  color: #323232;
 }
 
 .right-star {
