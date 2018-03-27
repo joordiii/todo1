@@ -90,6 +90,8 @@ get '/lists/:id' do
   @user = User.first(id: session[:user_id])
   all_lists = List.association_join(:permissions).where(user_id: @user.id)
   @list = List.first(id: params[:id])
+  @sorted_list = @list.items.sort_by { |k| k[:checked] ? 0 : 1 }
+  #binding.pry
   slim :slist_details, locals: { lists: all_lists }
 end
 

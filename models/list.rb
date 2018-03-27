@@ -21,7 +21,6 @@ class List < Sequel::Model
     #list = List.first(id: id)
     list = List[id: id]
     list.name = name
-    #binding.pry  
     #Uncomment the following line after:
     #1.- adding line 9 in 002_create_list_table.rb -> It add the column updated_at
     #list.updated_at = Time.now
@@ -38,13 +37,20 @@ class List < Sequel::Model
       #.. instance by its primary key value: ->Item[]<-
       # http://sequel.jeremyevans.net/rdoc/files/doc/querying_rdoc.html
       i = Item[item[:id].to_i]
+      #binding.pry  
       if i.nil?
         Item.create(name: item[:name], description: item[:description], list: list, user: user, created_at: Time.now, updated_at: Time.now)
       else
         i.name = item[:name]
         i.description = item[:description]
         i.updated_at = Time.now
-        i.checked = item[:checked]
+        if item[:checked] == nil
+          checked_value = 0
+        else
+          checked_value = 1
+        end
+        i.checked = checked_value 
+        #i.checked = item[:checked].to_i
         i.save
       end
     end

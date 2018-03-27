@@ -9,29 +9,36 @@
   .list-list
     h2.list-tit My #{@list.name} list
     .my-items
-      - @list.items.each do |item|
-        .back-item
-          .name-star
-            .left-name
+      - @sorted_list.each do |item|
+        - if item.checked == true
+          .back-item-true
+            .name-star-starred
+              .left-name
+                ul
+                  li.color-item = item.name
+              .right-name
+                | Priority item
+            .inner-item
               ul
-                li.color-item = item.name
-            .right-star
-              span.rating
-                label.lab for="rating-input-1-5" class="rating-star" Priority Item
-                input.check type="checkbox" class="rating-input" id="rating-input-1-5" name="rating-input-1"
-          .inner-item
-            ul
-              li.color-des = item.description
+                li.color-des = item.description
+                //li.color-des = "This is #{item.checked}"
+        - if item.checked == false
+          .back-item-false
+            .name-star
+              .left-name
+                ul
+                  li.color-item = item.name
+            .inner-item
+              ul
+                li.color-des = item.description
+                //li.color-des = "This is #{item.checked}"
     form action="http://localhost:4567/edit/#{@list.id}"
       .button-div
         input.reset-button1 type="submit" value="Edit List"
-        //i.glyphicon.glyphicon-pencil
       
-    //a href="http://localhost:4567/edit/#{@list.id}" Edit List
     form method="post" action=url("/delete")
       .button-div
-        //label.control-label.col-md-4 for="delete" value="#{@list.id}" ID
         input.form-control type="hidden" name="list_id" value="#{@list.id}"
         input.reset-button2 type="submit" value="Remove List"
-        //i.glyphicon.glyphicon-minus
+
         
