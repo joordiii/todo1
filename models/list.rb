@@ -6,6 +6,7 @@ class List < Sequel::Model
   one_to_many :items 
   one_to_many :permissions 
   one_to_many :logs 
+  one_to_many :comments
 
   def self.new_list name, items, user
     list = List.create(name: name, created_at: Time.now)
@@ -16,8 +17,9 @@ class List < Sequel::Model
     Permission.create(list: list, user: user, permission_level: 'read_write', created_at: Time.now, updated_at: Time.now)
     return list
   end
-
+  
   def self.edit_list id, name, items, user
+    #binding.pry  
     #list = List.first(id: id)
     list = List[id: id]
     list.name = name
@@ -38,7 +40,6 @@ class List < Sequel::Model
       #.. instance by its primary key value: ->Item[]<-
       # http://sequel.jeremyevans.net/rdoc/files/doc/querying_rdoc.html
       i = Item[item[:id].to_i]
-      #binding.pry  
       if i.nil?
         Item.create(name: item[:name], description: item[:description], list: list, user: user, created_at: Time.now, updated_at: Time.now)
       else

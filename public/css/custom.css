@@ -1,5 +1,5 @@
 * {
-  /* outline: 1px solid blue;  */
+  /* outline: 1px solid blue; */ 
   box-sizing: border-box;
   font-family: 'PT Sans', sans-serif;
   /*font-family: 'Roboto Mono', monospace;*/
@@ -23,7 +23,7 @@ body {
   flex-wrap: nowrap;
   justify-content: flex-start;
   word-wrap: break-word;
-  width: 43%;
+  width: 30%;
   padding: 5%;
   border-radius: 5px;
   background-color: #313d46;
@@ -46,7 +46,7 @@ body {
 .list-list {
   display: flex;
   flex-direction: column;
-  width: 43%;
+  width: 30%;
   padding: 5%;
   border-radius: 5px;
   background-color: #313d46;
@@ -110,6 +110,19 @@ ul {
   flex-direction: column;
   justify-content: space-around;
   padding: 8px;
+}
+
+.list-com {
+  color: whitesmoke;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  word-wrap: break-word;
+  width: 30%;
+  padding: 5%;
+  border-radius: 5px;
+  background-color: #313d46;
 }
 
 /* Reset button styles */

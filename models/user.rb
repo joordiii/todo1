@@ -6,5 +6,6 @@ class User < Sequel::Model
   one_to_many :items 
   one_to_many :permissions 
   one_to_many :logs 
+  one_to_many :comments
 end
 

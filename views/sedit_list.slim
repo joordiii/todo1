@@ -10,6 +10,10 @@
           .col-md-8
             input.form-control type="text" name="lists[][name]" value="#{list.name}"
         .form-group
+          label.control-label.col-md-4 for="name" Type your comment
+          .col-md-8
+            input.form-control type="textarea" name="comment[comment]" placeholder="Add your comment on this list HERE"
+        .form-group
           //label.control-label.col-md-4 for="id" List ID
           .col-md-8
             input.form-control type="hidden" name="lists[][id]" value="#{list.id}"
@@ -29,7 +33,7 @@
               .col-md-40
                 input.form-control type="text" name="items[][description]" value="#{item.description}"
             .group-item
-              label.col-md-40 for="due date" Due Date yyyy-mm-dd hh:mm:ss
+              label.col-md-40 for="due date" Due Date
               .col-md-40
                 //input.form-control type="datetime" name="items[][due_date]" min="#{time_now}" placeholder="Due Date format yyyy-mm-dd hh:mm:ss" pattern="\d{4}[-\/]\d{1,2}[-\/]\d{1,2}\s+\d{2}:\d{2}:\d{2}" value="#{item.due_date&.strftime('%Y/%m/%d %T')}"
                 input.form-control type="date" name="items[][due_date]" min="#{time_now}" value="#{item.due_date.to_s[0..-16]}" 

@@ -68,16 +68,11 @@ post '/update/?' do
   #list_name = List.get(:name)
   list_id = params[:lists][0][:id].to_i
   list = List.edit_list list_id, list_name, params[:items], @user
+  comment_content = params[:comment][:comment]
+  Comment.new_comment list_id, @user[:id], comment_content
   redirect "http://localhost:4567/lists/#{list_id}"
   #redirect request.referer
 end
-
-=begin post '/checked/?'
-  @user = User.first(id: session[:user_id])
-  list_checked = params[:lists][0]['checked']
-  list = List.edit_checked list_checked, @user
-end 
-=end
 
 post '/delete/?' do
   @user = User.first(id: session[:user_id])
@@ -114,8 +109,6 @@ get '/edit/:id/?' do
       can_edit = false
     end
   end
-  #item = Items.chomp_datetime list
-  #binding.pry
   if can_edit
     slim :sedit_list, locals: { list: list, time_now: time_min }
   else
@@ -126,7 +119,7 @@ end
 post '/edit/?' do
   @user = User.first(id: session[:user_id])
   #binding.pry
-  List.edit_list params[:id], params[:name], params[:items], @user
+  List.edit_list params[:id], params[:name], params[:items], @user 
   redirect request.referer
 end 
 
