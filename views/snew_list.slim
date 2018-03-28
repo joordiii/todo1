@@ -15,6 +15,8 @@
             input.form-control type="text" name="items[][name]" placeholder="Item name"
           .col-md-8
             textarea.form-control type="text" name="items[][description]" placeholder="Item description"
+          .col-md-4
+            input.form-control type="datetime" name="items[][due_date]" placeholder="Due date yyyy-mm-dd hh:mm:ss"
         #items_list.form-group
           a href='javascript:void(0)' id='add-item' class='col-md-3' Add Item
         hr
@@ -30,6 +32,8 @@ script type="text/template" id='item_template'
       input.form-control type="text" name="items[][name]" placeholder="Item name"
     .col-md-8
       textarea.form-control type="text" name="items[][description]" placeholder="Item description"
+    .col-md-4
+      input.form-control type="datetime" name="items[][due_date]" placeholder="Due date yyyy-mm-dd hh:mm:ss"
 
 
 javascript:

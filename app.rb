@@ -101,8 +101,6 @@ end
 get '/edit/:id/?' do
   @user = User.first(id: session[:user_id])
   list = List.first(id: params[:id])
-  #list2 = List[params[:id]]
-  #binding.pry
   can_edit = true
 
   if list.nil?
@@ -114,16 +112,18 @@ get '/edit/:id/?' do
       can_edit = false
     end
   end
-
+  #item = Items.chomp_datetime list
+  #binding.pry
   if can_edit
-    slim :sedit_list, locals: {list: list}
+    slim :sedit_list, locals: { list: list }
   else
-    haml :error, locals: {error: 'Invalid permissions'}
+    haml :error, locals: { error: 'Invalid permissions' }
   end
 end
 # Here, we do not require the id to be in the URL as the POST data will have it.
 post '/edit/?' do
   @user = User.first(id: session[:user_id])
+  #binding.pry
   List.edit_list params[:id], params[:name], params[:items], @user
   redirect request.referer
 end 

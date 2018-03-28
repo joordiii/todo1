@@ -1,6 +1,5 @@
 Sequel.migration do
-  alter_table do
-    add_column :due_date, DateTime
-    from(:items)
+  change do
+    alter_table(:items) {add_column :due_date, DateTime}
   end
 end

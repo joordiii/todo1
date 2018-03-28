@@ -10,10 +10,10 @@ class List < Sequel::Model
   def self.new_list name, items, user
     list = List.create(name: name, created_at: Time.now)
     items.each do |item|
-      Item.create(name: item[:name], description: item[:description], list: list, user: user, created_at: Time.now, updated_at: Time.now)
+      #binding.pry
+      Item.create(name: item[:name], description: item[:description], list: list, user: user, created_at: Time.now, updated_at: Time.now, due_date: item[:due_date])
     end
     Permission.create(list: list, user: user, permission_level: 'read_write', created_at: Time.now, updated_at: Time.now)
-    
     return list
   end
 
@@ -25,6 +25,7 @@ class List < Sequel::Model
     #1.- adding line 9 in 002_create_list_table.rb -> It add the column updated_at
     #list.updated_at = Time.now
     #2.- then do a migration
+  
     list.save
     
     items.each do |item|
@@ -50,31 +51,23 @@ class List < Sequel::Model
           checked_value = 1
         end
         i.checked = checked_value 
+        i.due_date = item[:due_date]
         #i.checked = item[:checked].to_i
         i.save
       end
     end
   end
 
-=begin def self.edit_checked checked, user
-    items.each do |item|
+=begin def self.chomp_datetime list
+    list = list
+
+    list.save
+    
+    list.items.each do |item|
       if item[:deleted]
-        #i = Item.first(item[:id]).destroy
-        i = Item[item[:id].to_i]
-        next
+        item[:due_date].to_s.chomp(' +0200')
       end
-      #The Sequel::Model.[] is the easiest method to use to find a model 
-      #.. instance by its primary key value: ->Item[]<-
-      # http://sequel.jeremyevans.net/rdoc/files/doc/querying_rdoc.html
-      i = Item[item[:id].to_i]
-      if i.nil?
-        Item.create(name: item[:name], description: item[:description], list: list, user: user, created_at: Time.now, updated_at: Time.now)
-      else
-        i.name = item[:name]
-        i.description = item[:description]
-        i.updated_at = Time.now
-        i.save
-      end
+
     end
   end 
 =end
