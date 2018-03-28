@@ -58,20 +58,6 @@ class List < Sequel::Model
     end
   end
 
-=begin def self.chomp_datetime list
-    list = list
-
-    list.save
-    
-    list.items.each do |item|
-      if item[:deleted]
-        item[:due_date].to_s.chomp(' +0200')
-      end
-
-    end
-  end 
-=end
-
   def self.del list_id
     #binding.pry
     # To be able to delete List, I have to delete first the Items and the Permissions

@@ -10,30 +10,36 @@
           .col-md-8
             input.form-control type="text" name="lists[][name]" value="#{list.name}"
         .form-group
-          label.control-label.col-md-4 for="id" List ID
+          //label.control-label.col-md-4 for="id" List ID
           .col-md-8
-            input.form-control type="text" name="lists[][id]" value="#{list.id}"
+            input.form-control type="hidden" name="lists[][id]" value="#{list.id}"
         hr
         - list.items.each do |item|
           .form-group.item-group
-            label.control-label.col-md-4 for="id" Item ID
-            .col-md-4
-              input.form-control type="text" name="items[][id]" value="#{item.id}"
-            label.control-label.col-md-4 for="name" Item Name
-            .col-md-4
-              input.form-control type="text" name="items[][name]" value="#{item.name}"
-            label.control-label.col-md-4 for="description" Item Description
-            .col-md-4
-              input.form-control type="text" name="items[][description]" value="#{item.description}"
-            label.control-label.col-md-4 for="due date" Item Due Date yyyy-mm-dd hh:mm:ss
-            .col-md-4
-              input.form-control type="datetime" name="items[][due_date]" placeholder="Due Date format yyyy-mm-dd hh:mm:ss" pattern="\d{4}[-\/]\d{1,2}[-\/]\d{1,2}\s+\d{2}:\d{2}:\d{2}" value="#{item.due_date&.strftime('%Y/%m/%d %T')}"
-            .col-md-4
-              label.check for="checkbox" Priority Item
-              - if item.checked == true 
-                input type="checkbox" name="items[][checked]" checked=true
-              - else
-                input type="checkbox" name="items[][checked]" checked=false
+            .group-item
+              //label.col-md-4 for="id" Item ID
+              .col-md-4
+                input.form-control type="hidden" name="items[][id]" value="#{item.id}"
+            .group-item
+              label.col-md-40.name-title for="name" Item Name
+              .col-md-40
+                input.form-control type="text" name="items[][name]" value="#{item.name}"
+            .group-item
+              label.col-md-40 for="description" Description
+              .col-md-40
+                input.form-control type="text" name="items[][description]" value="#{item.description}"
+            .group-item
+              label.col-md-40 for="due date" Due Date yyyy-mm-dd hh:mm:ss
+              .col-md-40
+                //input.form-control type="datetime" name="items[][due_date]" min="#{time_now}" placeholder="Due Date format yyyy-mm-dd hh:mm:ss" pattern="\d{4}[-\/]\d{1,2}[-\/]\d{1,2}\s+\d{2}:\d{2}:\d{2}" value="#{item.due_date&.strftime('%Y/%m/%d %T')}"
+                input.form-control type="date" name="items[][due_date]" min="#{time_now}" value="#{item.due_date.to_s[0..-16]}" 
+            .group-item
+              .col-md-40
+                label.check for="checkbox" Priority Item
+                - if item.checked == true 
+                  input type="checkbox" name="items[][checked]" checked=true
+                - else
+                  input type="checkbox" name="items[][checked]" checked=false
         hr
         .form-group
           .col-md-2.col-md-offset-3

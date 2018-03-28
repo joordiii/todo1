@@ -52,7 +52,8 @@ get '/?' do
   slim :slists, locals: {lists: all_lists, user: @user}
 end
 get '/new/?' do
-  slim :snew_list
+  time_min = Time.now.to_s[0..-16]
+  slim :snew_list, locals: {time_now: time_min}
 end
 post '/new/?' do
   @user = User.first(id: session[:user_id])
@@ -102,7 +103,8 @@ get '/edit/:id/?' do
   @user = User.first(id: session[:user_id])
   list = List.first(id: params[:id])
   can_edit = true
-
+  time_min = Time.now.to_s[0..-16]
+  #binding.pry
   if list.nil?
     can_edit = false
   elsif list.shared_with == 'public'
@@ -115,7 +117,7 @@ get '/edit/:id/?' do
   #item = Items.chomp_datetime list
   #binding.pry
   if can_edit
-    slim :sedit_list, locals: { list: list }
+    slim :sedit_list, locals: { list: list, time_now: time_min }
   else
     haml :error, locals: { error: 'Invalid permissions' }
   end
