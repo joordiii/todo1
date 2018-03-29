@@ -11,8 +11,8 @@ class Comm < Sequel::Model
     Comm.create(comm: comm, user: user, list: list, created_at: Time.now)
   end
 
-  def self.del_comm comm_id, user_id, list_id
-    Comm[{comm_id: user_id, user_id: user_id, list_id: list_id }].delete
+  def self.del_comm comm_id
+    Comm.where(:id => comm_id).delete
   end
 
 end

@@ -85,13 +85,18 @@ post '/delete/?' do
 end
 
 post '/delcomm/?' do
+  #binding.pry
   @user = User.first(id: session[:user_id])
+  comm_id = params["comm_id"].to_i
+  Comm.del_comm comm_id
+  redirect "http://localhost:4567/"
 end
 
 get '/lists/:id' do
   @user = User.first(id: session[:user_id])
   all_lists = List.association_join(:permissions).where(user_id: @user.id)
   @list = List.first(id: params[:id])
+  #binding.pry
   @comms = Comm.where(Sequel.like(:list_id, params[:id]))
   #@comms = Comm.select{|x| x.list_id = params[:id].to_ico}
   #@sorted_list = @list.items.sort_by { |k| k[:checked] ? 0 : 1 }

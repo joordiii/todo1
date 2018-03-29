@@ -44,11 +44,14 @@
   .list-com
     h2.list-tit My #{@list.name} list - Comments
     .div-left
-      - @comms.each do |com|
-        .arrow-up
-        p class="color" = com.comm
-          //form method="post" action=url("/delete")
-            .button-div
-              input.form-control type="hidden" name="list_id" value="#{@list.id}"
-              input.reset-button2 type="submit" value="Remove Comment"
+      - @comms.each_with_index do |com, index|
+        .concomms
+          .other
+          .delbutton  
+            form method="post" action=url("/delcomm") style="margin: 0;"
+              .button-div
+                //i.glyphicon.glyphicon-remove
+                input.form-control type="hidden" name="comm_id" value="#{com.id}"
+                input.reset-button3 type="submit" value="x"
+          .color = com.comm
           
