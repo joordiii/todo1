@@ -88,7 +88,13 @@ post '/delcomm/?' do
   #binding.pry
   @user = User.first(id: session[:user_id])
   comm_id = params["comm_id"].to_i
-  Comm.del_comm comm_id
+  co = Comm.where(:id => comm_id)
+  tcreated = co[:id][:created_at]
+  tnow = Time.now
+  #binding.pry
+  if tnow > tcreated+900
+    Comm.del_comm comm_id
+  end
   redirect "http://localhost:4567/"
 end
 

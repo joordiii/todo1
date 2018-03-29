@@ -35,7 +35,7 @@
                 //li.color-des = "This is #{item.checked}"
     form action="http://localhost:4567/edit/#{@list.id}"
       .button-div
-        input.reset-button1 type="submit" value="Edit List"
+        input.reset-button1 type="submit" value="Edit List | Add Comments"
       
     form method="post" action=url("/delete")
       .button-div
@@ -52,6 +52,17 @@
               .button-div
                 //i.glyphicon.glyphicon-remove
                 input.form-control type="hidden" name="comm_id" value="#{com.id}"
+                //input.form-control type="hidden" name="comm_del" value="#{com.del_date}"
                 input.reset-button3 type="submit" value="x"
           .color = com.comm
+
+//javascript:
+  function hide() {
+    var x = document.getElementById("button-div");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+  } 
           

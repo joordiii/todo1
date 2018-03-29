@@ -12,7 +12,20 @@ class Comm < Sequel::Model
   end
 
   def self.del_comm comm_id
-    Comm.where(:id => comm_id).delete
-  end
+    #binding.pry
+    co = Comm.where(:id => comm_id).delete
+  end 
+
+
+=begin   def self.del_comm comm_id
+    #binding.pry
+    co = Comm.where(:id => comm_id)
+    tcreated = co[:id][:created_at]
+    tnow = Time.now
+    if tnow > tcreated+900
+      Comm.where(:id => comm_id).delete
+    end 
+  end 
+=end
 
 end
