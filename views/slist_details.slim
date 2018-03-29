@@ -43,4 +43,12 @@
         input.reset-button2 type="submit" value="Remove List"
   .list-com
     h2.list-tit My #{@list.name} list - Comments
-        
+    .div-left
+      - @comms.each do |com|
+        .arrow-up
+        p class="color" = com.comm
+          //form method="post" action=url("/delete")
+            .button-div
+              input.form-control type="hidden" name="list_id" value="#{@list.id}"
+              input.reset-button2 type="submit" value="Remove Comment"
+          

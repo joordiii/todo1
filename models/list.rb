@@ -14,14 +14,15 @@ class List < Sequel::Model
       #binding.pry
       Item.create(name: item[:name], description: item[:description], list: list, user: user, created_at: Time.now, updated_at: Time.now, due_date: item[:due_date])
     end
+    #binding.pry
     Permission.create(list: list, user: user, permission_level: 'read_write', created_at: Time.now, updated_at: Time.now)
     return list
   end
   
   def self.edit_list id, name, items, user
-    #binding.pry  
     #list = List.first(id: id)
     list = List[id: id]
+    #binding.pry  
     list.name = name
     #Uncomment the following line after:
     #1.- adding line 9 in 002_create_list_table.rb -> It add the column updated_at

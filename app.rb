@@ -64,12 +64,14 @@ end
 post '/update/?' do
   @user = User.first(id: session[:user_id])
   list_name = params[:lists][0]['name']
-  #binding.pry
   #list_name = List.get(:name)
   list_id = params[:lists][0][:id].to_i
   list = List.edit_list list_id, list_name, params[:items], @user
+  list_obj = List[id: list_id]
+  #binding.pry
   comment_content = params[:comment][:comment]
-  Comment.new_comment list_id, @user[:id], comment_content
+  #Comment.new_comment params[:lists], @user, comment_content
+  Comm.new_comm comment_content, @user, list_obj
   redirect "http://localhost:4567/lists/#{list_id}"
   #redirect request.referer
 end
@@ -82,10 +84,16 @@ post '/delete/?' do
   redirect "http://localhost:4567/"
 end
 
+post '/delcomm/?' do
+  @user = User.first(id: session[:user_id])
+end
+
 get '/lists/:id' do
   @user = User.first(id: session[:user_id])
   all_lists = List.association_join(:permissions).where(user_id: @user.id)
   @list = List.first(id: params[:id])
+  @comms = Comm.where(Sequel.like(:list_id, params[:id]))
+  #@comms = Comm.select{|x| x.list_id = params[:id].to_ico}
   #@sorted_list = @list.items.sort_by { |k| k[:checked] ? 0 : 1 }
   #@sorted_list = @list.items_dataset.select_order_map(:checked).reverse
   @sorted_list = @list.items_dataset.order(Sequel.desc(:checked))

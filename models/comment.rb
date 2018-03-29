@@ -1,12 +1,13 @@
 require 'Sequel'
 
 class Comment < Sequel::Model
-  set_primary_key :id
-
-  many_to_one :list
-  many_to_one :user
+  set_primary_key :id 
+ 
+  many_to_one :user 
+  many_to_one :list 
 
   def self.new_comment list, user, comment
+    #binding.pry
     comment = Comment.create(list: list, user: user, comment: comment, created_at: Time.now)
     return comment
   end

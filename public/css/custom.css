@@ -266,4 +266,19 @@ label.check {
   color: #3C892F;
 }
 
+.color:nth-of-type(odd) {
+  color:#000;
+  border-radius: 5px;
+  background-color: rgb(225, 255, 225);
+  padding: 2vw 2vh;
+  margin-right: 2vh;
+}
+      
+.color:nth-of-type(even) {
+  color:#000;
+  border-radius: 5px;
+  background-color: rgb(255, 250, 210);
+  padding: 2vw 2vh;
+  margin-left: 2vh;
+}
 
