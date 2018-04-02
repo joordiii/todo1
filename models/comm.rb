@@ -8,7 +8,9 @@ class Comm < Sequel::Model
 
   def self.new_comm comm, user, list 
     #binding.pry
-    Comm.create(comm: comm, user: user, list: list, created_at: Time.now, del_date: Time.now+900)
+    if comm != ""
+      Comm.create(comm: comm, user: user, list: list, created_at: Time.now, del_date: Time.now+900)
+    end
   end
 
   def self.del_comm comm_id
