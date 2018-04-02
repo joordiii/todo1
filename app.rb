@@ -92,7 +92,7 @@ post '/delcomm/?' do
   tcreated = co[:id][:created_at]
   tnow = Time.now
   #binding.pry
-  if tnow > tcreated+900
+  if tnow > tcreated+90
     Comm.del_comm comm_id
   end
   redirect "http://localhost:4567/"

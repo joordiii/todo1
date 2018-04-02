@@ -49,17 +49,18 @@
           .other
           .delbutton  
             form method="post" action=url("/delcomm") style="margin: 0;"
-              .button-div
+              .button-div id="b-div"
                 //i.glyphicon.glyphicon-remove
                 input.form-control type="hidden" name="comm_id" value="#{com.id}"
-                //input.form-control type="hidden" name="comm_del" value="#{com.del_date}"
+                //input.form-control id="del" type="hidden" name="comm_del" value="#{com.del_date}"
                 input.reset-button3 type="submit" value="x"
           .color = com.comm
 
 //javascript:
   function hide() {
-    var x = document.getElementById("button-div");
-    if (x.style.display === "none") {
+    var x = document.getElementById("b-div");
+    var y = document.getElementById('del').value
+    if (x.style.display === "none") && (y.value < {
         x.style.display = "block";
     } else {
         x.style.display = "none";

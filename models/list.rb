@@ -63,10 +63,19 @@ class List < Sequel::Model
   def self.del list_id
     #binding.pry
     # To be able to delete List, I have to delete first the Items and the Permissions
-    Item.where(:list_id => list_id).delete
+    #Comm.where(:list_id => list_id).all.delete(:list_id => list_id)
+    c = Comm.where(:list_id => list_id).all
+    c.each do |single_comm|
+      single_comm.delete
+    end
+    #i = Item.where(:list_id => list_id).delete
+    i = Item.where(:list_id => list_id).all
+    i.each do |singe_item|
+      singe_item.delete
+    end
     Permission.where(:list_id => list_id).delete
-    List.where(:id => list_id).delete
-    #List[list_id].delete
+    #List.where(:id => list_id).delete
+    List[list_id].delete
   end
   
   def validate
