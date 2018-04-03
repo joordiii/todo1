@@ -48,12 +48,13 @@
         .concomms
           .other
           .delbutton  
-            form method="post" action=url("/delcomm") style="margin: 0;"
-              .button-div id="b-div"
-                //i.glyphicon.glyphicon-remove
-                input.form-control type="hidden" name="comm_id" value="#{com.id}"
-                //input.form-control id="del" type="hidden" name="comm_del" value="#{com.del_date}"
-                input.reset-button3 type="submit" value="x"
+            - if Time.now > com.del_date
+              form method="post" action=url("/delcomm") style="margin: 0;"
+                .button-div id="b-div"
+                  //i.glyphicon.glyphicon-remove
+                  input.form-control type="hidden" name="comm_id" value="#{com.id}"
+                  //input.form-control id="del" type="hidden" name="comm_del" value="#{com.del_date}"
+                  input.reset-button3 type="submit" value="x"
           .color = com.comm
 
 //javascript:

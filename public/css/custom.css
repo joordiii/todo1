@@ -16,6 +16,13 @@ body {
   justify-content: space-around;
 }
 
+.cont2 {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
 .list-gen {
   color: whitesmoke;
   display: flex;
@@ -311,4 +318,5 @@ label.check {
 /* .button-div {
   background-color: #F07066;
 } */
+
 
