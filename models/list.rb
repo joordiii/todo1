@@ -6,7 +6,29 @@ class List < Sequel::Model
   one_to_many :items 
   one_to_many :permissions 
   one_to_many :logs 
-  one_to_many :comments
+  one_to_many :comms
+
+  def before_destroy
+    #binding.pry
+    comms.each(&:destroy)
+    items.each(&:destroy)
+    permissions.each(&:destroy)
+=begin comms.each do |comment|
+  comment.delete
+end 
+ =end
+=begin items.each do |item|
+  item.delete
+end 
+=end
+=begin permissions.each do |perm|
+  perm.delete
+end 
+=end
+    super
+
+  end 
+
 
   def self.new_list name, items, user
     list = List.create(name: name, created_at: Time.now)
@@ -60,23 +82,28 @@ class List < Sequel::Model
     end
   end
 
-  def self.del list_id
-    #binding.pry
-    # To be able to delete List, I have to delete first the Items and the Permissions
-    #Comm.where(:list_id => list_id).all.delete(:list_id => list_id)
-    c = Comm.where(:list_id => list_id).all
-    c.each do |single_comm|
-      single_comm.delete
-    end
-    #i = Item.where(:list_id => list_id).delete
-    i = Item.where(:list_id => list_id).all
-    i.each do |singe_item|
-      singe_item.delete
-    end
-    Permission.where(:list_id => list_id).delete
-    #List.where(:id => list_id).delete
-    List[list_id].delete
+  #List.del(23)
+  #List.first(23).del
+
+=begin def self.del list_id
+  #binding.pry
+  # To be able to delete List, I have to delete first the Items and the Permissions
+  #Comm.where(:list_id => list_id).all.delete(:list_id => list_id)
+  c = Comm.where(:list_id => list_id).all
+  c.each do |single_comm|
+    single_comm.delete
   end
+  #i = Item.where(:list_id => list_id).delete
+  i = Item.where(:list_id => list_id).all
+  i.each do |singe_item|
+    singe_item.delete
+  end
+  Permission.where(:list_id => list_id).delete
+  #List.where(:id => list_id).delete
+  List[list_id].delete
+end  
+=end
+
   
   def validate
     super
@@ -91,4 +118,10 @@ class Item < Sequel::Model
  
   many_to_one :user 
   many_to_one :list 
+
+=begin def before_validation
+  checked = false if checked.nil?
+end 
+=end
+
 end

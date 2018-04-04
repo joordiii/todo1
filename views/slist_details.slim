@@ -48,7 +48,7 @@
         .concomms
           .other
           .delbutton  
-            - if Time.now > com.del_date
+            - if Time.now < com.del_date
               form method="post" action=url("/delcomm") style="margin: 0;"
                 .button-div id="b-div"
                   //i.glyphicon.glyphicon-remove

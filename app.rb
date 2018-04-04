@@ -1,5 +1,5 @@
 require 'sinatra' 
-#require 'sinatra/reloader'
+require 'sinatra/reloader'
 require 'sequel' 
 require 'mysql2'
 require 'haml'
@@ -14,15 +14,9 @@ class Todo < Sinatra::Application # We inherit the Application class of the Sina
   enable :sessions
   set :session_secret, 'super secret'
   disable :protection
-=begin use Rack::Session::Cookie, 
-      :key => 'rack.session',
-      :domain => 'myawesomeapp.com',
-      :path => '/',
-      :expire_after => 2592000,
-      :secret => 'random_text',
-      :old_secret => 'another_random_text' 
-=end
+
   configure do
+    register Sinatra::Reloader
     env = 'development'
     var = YAML.load(File.open('config/database.yml'))
     @DB = Sequel.connect(YAML.load(File.open('config/database.yml'))[env])
@@ -33,6 +27,7 @@ class Todo < Sinatra::Application # We inherit the Application class of the Sina
     # We get an array of .rb files
     Dir[File.join(File.dirname(__FILE__),'models','*.rb')].each { |model| require model } 
   end 
+  enable :reloader
 end 
 
 before do # It checks the validity of the user's session. It will be invoked for every route  
@@ -40,15 +35,14 @@ before do # It checks the validity of the user's session. It will be invoked for
     #binding.pry
     redirect '/login'
   end
+  # Before every route it sets the @user
+  @user = User.first(id: session[:user_id]) if session[:user_id]
 end 
 
 
 # When typing '/' or '' we get all lists into a variable called all_lists
 get '/?' do
-  @user = User.first(id: session[:user_id])
-  #all_lists =  List.all
   all_lists = List.association_join(:permissions).where(user_id: @user.id)
-  #binding.pry
   slim :slists, locals: {lists: all_lists, user: @user}
 end
 get '/new/?' do
@@ -56,50 +50,43 @@ get '/new/?' do
   slim :snew_list, locals: {time_now: time_min}
 end
 post '/new/?' do
-  @user = User.first(id: session[:user_id])
   list = List.new_list params[:name], params[:items], @user
   redirect "/lists/#{list.id}"
 end
 
 post '/update/?' do
-  @user = User.first(id: session[:user_id])
   list_name = params[:lists][0]['name']
-  #list_name = List.get(:name)
   list_id = params[:lists][0][:id].to_i
   list = List.edit_list list_id, list_name, params[:items], @user
   list_obj = List[id: list_id]
   #binding.pry
   comment_content = params[:comment][:comment]
-  #Comment.new_comment params[:lists], @user, comment_content
   Comm.new_comm comment_content, @user, list_obj
   redirect "http://localhost:4567/lists/#{list_id}"
-  #redirect request.referer
 end
 
 post '/delete/?' do
-  @user = User.first(id: session[:user_id])
   #binding.pry
   list_id = params["list_id"].to_i
-  List.del list_id
+  #List.del list_id
+  List.first(id: list_id).destroy
   redirect "http://localhost:4567/"
 end
 
 post '/delcomm/?' do
-  #binding.pry
-  @user = User.first(id: session[:user_id])
   comm_id = params["comm_id"].to_i
   co = Comm.where(:id => comm_id)
   tcreated = co[:id][:created_at]
   tnow = Time.now
   #binding.pry
-  if tnow > tcreated+900
+  if tnow < tcreated+900
+    #Comm.where(:id => comm_id).destroy
     Comm.del_comm comm_id
   end
   redirect "http://localhost:4567/"
 end
 
 get '/lists/:id' do
-  @user = User.first(id: session[:user_id])
   all_lists = List.association_join(:permissions).where(user_id: @user.id)
   @list = List.first(id: params[:id])
   #binding.pry
@@ -114,7 +101,6 @@ get '/lists/:id' do
 end
 
 get '/edit/:id/?' do
-  @user = User.first(id: session[:user_id])
   list = List.first(id: params[:id])
   can_edit = true
   time_min = Time.now.to_s[0..-16]
@@ -143,7 +129,6 @@ post '/edit/?' do
 end 
 
 post '/permission/?' do
-  @user = User.first(id: session[:user_id])
   list = List.first(id: params[:id])
   can_change_permission = true
 
@@ -214,7 +199,6 @@ post '/login/?' do
     session[:user_id] = @user.id
     #binding.pry
     redirect '/'
-    #redirect "/test?name=#{@name}"
   end
 end
 
@@ -223,13 +207,3 @@ get '/logout/?' do
   redirect '/login'
 end
 
-get '/test' do
-  p "putting user_id"
-  p session[:user_id]
-  @user = User.first(id: session[:user_id])
-  
-  @message = session[:message]
-  @name = params[:name]
-  #binding.pry
-  haml :test
-end

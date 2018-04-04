@@ -6,6 +6,11 @@ class Comm < Sequel::Model
   many_to_one :user 
   many_to_one :list 
 
+=begin   def before_destroy
+    binding.pry
+  end 
+=end
+
   def self.new_comm comm, user, list 
     #binding.pry
     if comm != ""
