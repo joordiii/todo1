@@ -13,21 +13,12 @@ class List < Sequel::Model
     comms.each(&:destroy)
     items.each(&:destroy)
     permissions.each(&:destroy)
-=begin comms.each do |comment|
-  comment.delete
-end 
- =end
-=begin items.each do |item|
-  item.delete
-end 
-=end
-=begin permissions.each do |perm|
-  perm.delete
-end 
-=end
     super
-
   end 
+
+  def before_update
+    p "Heiiii"
+  end
 
 
   def self.new_list name, items, user
@@ -114,7 +105,7 @@ end
 end
 
 class Item < Sequel::Model 
-  set_primary_key :id 
+  set_primary_key :id                            
  
   many_to_one :user 
   many_to_one :list 
