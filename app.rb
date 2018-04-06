@@ -14,6 +14,11 @@ class Todo < Sinatra::Application # We inherit the Application class of the Sina
   enable :sessions
   set :session_secret, 'super secret'
   disable :protection
+  # The option below prevents from appearing the error debugging page
+  #set :show_exceptions, false
+  #disable :raise_errors
+  set :dump_errors, false
+  set :raise_errors, false
 
   configure do
     register Sinatra::Reloader
@@ -32,7 +37,6 @@ end
 
 before do # It checks the validity of the user's session. It will be invoked for every route  
   if !['login', 'signup'].include?(request.path_info.split('/')[1]) && session[:user_id].nil?
-    #binding.pry
     redirect '/login'
   end
   # Before every route it sets the @user
@@ -46,12 +50,63 @@ get '/?' do
   slim :slists, locals: {lists: all_lists, user: @user}
 end
 get '/new/?' do
-  time_min = Time.now.to_s[0..-16]
-  slim :snew_list, locals: {time_now: time_min}
+  no_name = false
+  no_item_name = false
+  list_name = ""
+  item_name = ""
+  @time_min = Time.now.to_s[0..-16]
+  slim :snew_list, locals: {time_now: @time_min, no_name: no_name, no_item_name: no_item_name, list_name: list_name, item_name: item_name}
 end
 post '/new/?' do
-  list = List.new_list params[:name], params[:items], @user
-  redirect "/lists/#{list.id}"
+  list_name = params[:name]
+  array_items = params[:items]
+  no_name = false
+  no_item_name = false
+  item_name = params[:items][0][:name]
+  item_description = params[:items][0][:description]
+  due_date = params[:items][0][:due_date]
+  #list = List.new_list params[:name], params[:items], @user
+  list = List.new(name: list_name, created_at: Time.now)
+  #itemsinstance = Item.new_item params[:name], params[:items], @user
+  itemsinstance = params[:items].each do |elem|
+    c = Item.new(name: item_name, description: item_description, created_at: Time.now, updated_at: Time.now, due_date: due_date)
+    #binding.pry
+    case 
+      when list.valid? == false && c.valid? == false
+        no_name = true
+        no_item_name = true
+        list_name = list.name
+        item_name = params[:items][0][:name]
+      when list.valid? == false && c.valid? == true
+        no_name = true
+        no_item_name = false
+        list_name = list.name
+        item_name = params[:items][0][:name]
+        #binding.pry
+      
+      when list.valid? == true && c.valid? == false
+        no_name = false
+        no_item_name = true
+        list_name = list.name
+        item_name = params[:items][0][:name]
+      
+      else
+        no_name = false
+        no_item_name = false
+        list_name = list.name
+        item_name = params[:items][0][:name]
+        binding.pry
+        list = List.create_list list_name, array_items, @user
+    end
+    #binding.pry
+  end
+  #in case of errors render the same form with error messages
+  if no_name == true || no_item_name == true
+    slim :snew_list, locals: {no_name: no_name, no_item_name: no_item_name} 
+  else
+    redirect "/lists/#{list.id}"
+  end
+
 end
 
 post '/update/?' do

@@ -7,16 +7,29 @@
       form.form-horizontal name="list" method="post" action=url("/new")
         .form-group
           label.control-label.col-md-4 for="name" List Name
-          .col-md-8
-            input.form-control type="text" name="name"
+          - if no_name == true 
+            .col-md-8
+              input.form-control.has-error type="text" name="name" 
+              .err_message * Name can't be empty
+          - else
+            .col-md-8
+              //input.form-control type="text" name="name" placeholder="#{list_name}"
+              input.form-control type="text" name="name"
         hr
         .form-group.item-group
-          .col-md-4
-            input.form-control type="text" name="items[][name]" placeholder="Item name"
+          - if no_item_name    
+            .col-md-4
+              - input_class = no_item_name ? "form-control has-error" : "form-control"
+              input class=input_class type="text" name="items[][name]" 
+              .err_message * Item name can't be empty
+          - else
+            .col-md-4
+              //input.form-control type="text" name="items[][name]" placeholder="#{item_name}"
+              input.form-control type="text" name="items[][name]"
           .col-md-8
             textarea.form-control type="text" name="items[][description]" placeholder="Item description"
           .col-md-4
-            input.form-control type="date" name="items[][due_date]" min="#{time_now}"
+            input.form-control type="date" name="items[][due_date]" min="#{@time_now}"
         #items_list.form-group
           a href='javascript:void(0)' id='add-item' class='col-md-3' Add Item
         hr
@@ -33,7 +46,7 @@ script type="text/template" id='item_template'
     .col-md-8
       textarea.form-control type="text" name="items[][description]" placeholder="Item description"
     .col-md-4
-      input.form-control type="date" name="items[][due_date]" min="#{time_now}"  
+      input.form-control type="date" name="items[][due_date]" min="#{@time_now}"  
 
 
 javascript:

@@ -319,4 +319,21 @@ label.check {
   background-color: #F07066;
 } */
 
+.form-control.has-error {
+    color: #a94442;
+    border: 2px solid #f2504d;
+}
+
+.form-control.has-error:focus {
+  background-color: rgb(254, 209, 209);
+  border: 2px solid rgb(254, 103, 128);
+  box-shadow: 0 0 5px #ff0000;
+}
+
+/* Color of valid field */
+.has-success .control-label,
+.has-success .help-block,
+.has-success .form-control-feedback {
+    color: #3c763d;
+}
 

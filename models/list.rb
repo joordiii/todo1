@@ -22,12 +22,15 @@ class List < Sequel::Model
 
 
   def self.new_list name, items, user
+    list = List.new(name: name, created_at: Time.now)
+    return list
+  end
+
+  def self.create_list name, items, user
     list = List.create(name: name, created_at: Time.now)
     items.each do |item|
-      #binding.pry
       Item.create(name: item[:name], description: item[:description], list: list, user: user, created_at: Time.now, updated_at: Time.now, due_date: item[:due_date])
     end
-    #binding.pry
     Permission.create(list: list, user: user, permission_level: 'read_write', created_at: Time.now, updated_at: Time.now)
     return list
   end
@@ -72,32 +75,11 @@ class List < Sequel::Model
       end
     end
   end
-
-  #List.del(23)
-  #List.first(23).del
-
-=begin def self.del list_id
-  #binding.pry
-  # To be able to delete List, I have to delete first the Items and the Permissions
-  #Comm.where(:list_id => list_id).all.delete(:list_id => list_id)
-  c = Comm.where(:list_id => list_id).all
-  c.each do |single_comm|
-    single_comm.delete
-  end
-  #i = Item.where(:list_id => list_id).delete
-  i = Item.where(:list_id => list_id).all
-  i.each do |singe_item|
-    singe_item.delete
-  end
-  Permission.where(:list_id => list_id).delete
-  #List.where(:id => list_id).delete
-  List[list_id].delete
-end  
-=end
-
-  
+ 
   def validate
     super
+    #errors.add(:name, 'cannot be empty') if !name || name.empty?
+    #errors.add(:created_at, 'cannot be empty') if !created_at || created_at.empty?
     validates_presence [:name, :created_at]
     validates_unique :name
     validates_format /\A[A-Za-z]/, :name, message: 'is not a valid name'
@@ -110,9 +92,19 @@ class Item < Sequel::Model
   many_to_one :user 
   many_to_one :list 
 
-=begin def before_validation
-  checked = false if checked.nil?
-end 
-=end
+  def self.new_item name, items, user
+    list = List.new(name: name, created_at: Time.now)
+    items.each do |item|
+      Item.new(name: item[:name], description: item[:description], created_at: Time.now, updated_at: Time.now, due_date: item[:due_date])
+      binding.pry
+    end
+    #return itemsinstance
+  end
+
+
+  def validate
+    validates_presence [:name]
+  end 
+
 
 end
