@@ -104,22 +104,19 @@ post '/new/?' do
   #If conditions are ok, create the list
   if ok == params[:items].length
     list = List.create_list list_name, array_items, @user
-  end
-  error_list = list.errors
-  #binding.pry
-  # To prevent errors passing variables to slim
-  error_list.empty? ? error_list = {:name=>["","",""]} : error_list = list.errors
-  error_items = @it.errors
-  #in case of errors render the same form with error messages
-  if no_name == true || no_item_name == true
+    redirect "/lists/#{list.id}"
+  else
+    error_list = list.errors
+    #binding.pry
+    # To prevent errors passing variables to slim
+    error_list.empty? ? error_list = {:name=>["","",""]} : error_list = list.errors
+    error_items = @it.errors
+    #in case of errors render the same form with error messages
     slim :snew_list, locals: {no_name: no_name, no_item_name: no_item_name, 
       list_name: list_name, item_name: item_name, 
       error_list_empty: error_list[:name][0], error_list_format: error_list[:name][1],
       error_list_uniqueness: error_list[2], error_items: error_items[:name][0]} 
-  else
-    redirect "/lists/#{list.id}"
-  end
-
+    end
 end
 
 post '/update/?' do
