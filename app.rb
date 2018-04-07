@@ -65,39 +65,45 @@ post '/new/?' do
   item_name = params[:items][0][:name]
   item_description = params[:items][0][:description]
   due_date = params[:items][0][:due_date]
+  ok = 0
   #list = List.new_list params[:name], params[:items], @user
   list = List.new(name: list_name, created_at: Time.now)
   #itemsinstance = Item.new_item params[:name], params[:items], @user
-  itemsinstance = params[:items].each do |elem|
-    @it = Item.new(name: item_name, description: item_description, created_at: Time.now, updated_at: Time.now, due_date: due_date)
+  itemsinstance = params[:items].each_with_index do |elem, index|
+    @it = Item.new(name: params[:items][index][:name], description: params[:items][index][:description], created_at: Time.now, updated_at: Time.now, due_date: params[:items][index][:due_date])
     #binding.pry
     case 
       when list.valid? == false && @it.valid? == false
         no_name = true
         no_item_name = true
         list_name = list.name
-        item_name = params[:items][0][:name]
+        item_name = params[:items][index][:name]
+        break
       when list.valid? == false && @it.valid? == true
         no_name = true
         no_item_name = false
         list_name = list.name
-        item_name = params[:items][0][:name]
+        item_name = params[:items][index][:name]
         #binding.pry
-      
+        break
       when list.valid? == true && @it.valid? == false
         no_name = false
         no_item_name = true
         list_name = list.name
-        item_name = params[:items][0][:name]
-      
+        item_name = params[:items][index][:name]
+        break
       else
         no_name = false
         no_item_name = false
         list_name = list.name
-        item_name = params[:items][0][:name]
+        item_name = params[:items][index][:name]
+        ok += 1
         #binding.pry
-        list = List.create_list list_name, array_items, @user
     end
+  end
+  #If conditions are ok, create the list
+  if ok == params[:items].length
+    list = List.create_list list_name, array_items, @user
   end
   error_list = list.errors
   #binding.pry
