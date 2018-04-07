@@ -21,7 +21,7 @@ class List < Sequel::Model
   end
 
 
-  def self.new_list name, items, user
+  def self.new_list name
     list = List.new(name: name, created_at: Time.now)
     return list
   end
@@ -92,13 +92,42 @@ class Item < Sequel::Model
   many_to_one :user 
   many_to_one :list 
 
-  def self.new_item name, items, user
+  def self.new_item name, items, user, no_name, no_item_name, item_name, item_description, due_date
+    ok = 0
     list = List.new(name: name, created_at: Time.now)
-    items.each do |item|
-      Item.new(name: item[:name], description: item[:description], created_at: Time.now, updated_at: Time.now, due_date: item[:due_date])
-      binding.pry
+    items.each_with_index do |item, elem|
+      @it = Item.new(name: item_name, description: item_description, created_at: Time.now, updated_at: Time.now, due_date: due_date)
+      #binding.pry
+      case 
+        when list.valid? == false && @it.valid? == false
+          no_name = true
+          no_item_name = true
+          list_name = name
+          item_name = item_name
+          break
+        when list.valid? == false && @it.valid? == true
+          no_name = true
+          no_item_name = false
+          list_name = name
+          item_name = item_name
+          #binding.pry
+          break
+        when list.valid? == true && @it.valid? == false
+          no_name = false
+          no_item_name = true
+          list_name = name
+          item_name = item_name
+          break
+        else
+          no_name = false
+          no_item_name = false
+          list_name = name
+          item_name = item_name
+          ok += 1
+          #binding.pry
+      end
     end
-    #return itemsinstance
+    return ok
   end
 
 
