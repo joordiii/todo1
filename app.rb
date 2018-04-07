@@ -69,22 +69,22 @@ post '/new/?' do
   list = List.new(name: list_name, created_at: Time.now)
   #itemsinstance = Item.new_item params[:name], params[:items], @user
   itemsinstance = params[:items].each do |elem|
-    c = Item.new(name: item_name, description: item_description, created_at: Time.now, updated_at: Time.now, due_date: due_date)
+    @it = Item.new(name: item_name, description: item_description, created_at: Time.now, updated_at: Time.now, due_date: due_date)
     #binding.pry
     case 
-      when list.valid? == false && c.valid? == false
+      when list.valid? == false && @it.valid? == false
         no_name = true
         no_item_name = true
         list_name = list.name
         item_name = params[:items][0][:name]
-      when list.valid? == false && c.valid? == true
+      when list.valid? == false && @it.valid? == true
         no_name = true
         no_item_name = false
         list_name = list.name
         item_name = params[:items][0][:name]
         #binding.pry
       
-      when list.valid? == true && c.valid? == false
+      when list.valid? == true && @it.valid? == false
         no_name = false
         no_item_name = true
         list_name = list.name
@@ -95,14 +95,21 @@ post '/new/?' do
         no_item_name = false
         list_name = list.name
         item_name = params[:items][0][:name]
-        binding.pry
+        #binding.pry
         list = List.create_list list_name, array_items, @user
     end
-    #binding.pry
   end
+  error_list = list.errors
+  #binding.pry
+  # To prevent errors passing variables to slim
+  error_list.empty? ? error_list = {:name=>["","",""]} : error_list = list.errors
+  error_items = @it.errors
   #in case of errors render the same form with error messages
   if no_name == true || no_item_name == true
-    slim :snew_list, locals: {no_name: no_name, no_item_name: no_item_name} 
+    slim :snew_list, locals: {no_name: no_name, no_item_name: no_item_name, 
+      list_name: list_name, item_name: item_name, 
+      error_list_empty: error_list[:name][0], error_list_format: error_list[:name][1],
+      error_list_uniqueness: error_list[2], error_items: error_items[:name][0]} 
   else
     redirect "/lists/#{list.id}"
   end

@@ -337,3 +337,6 @@ label.check {
     color: #3c763d;
 }
 
+.err_message {
+  color: rgb(133, 27, 27);
+}

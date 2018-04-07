@@ -78,11 +78,11 @@ class List < Sequel::Model
  
   def validate
     super
-    #errors.add(:name, 'cannot be empty') if !name || name.empty?
-    #errors.add(:created_at, 'cannot be empty') if !created_at || created_at.empty?
-    validates_presence [:name, :created_at]
-    validates_unique :name
-    validates_format /\A[A-Za-z]/, :name, message: 'is not a valid name'
+    errors.add(:name, 'Name cannot be empty') if !name || name.empty?
+    errors.add(:created_at, 'cannot be empty') if !created_at
+    #validates_presence [:name, :created_at]
+    validates_unique :name, message: 'Name shold be unique'
+    validates_format /\A[A-Za-z]/, :name, message: 'should begin with a character'
   end
 end
 
@@ -103,7 +103,7 @@ class Item < Sequel::Model
 
 
   def validate
-    validates_presence [:name]
+    validates_presence [:name], message: "Item can't be empty"
   end 
 
 
