@@ -65,7 +65,6 @@ post '/new/?' do
   item_name = params[:items][0][:name]
   item_description = params[:items][0][:description]
   due_date = params[:items][0][:due_date]
-  #list = List.new_list params[:name], params[:items], @user
   list = List.new_list list_name
   ok_to_save = Item.new_item list_name, array_items, @user, no_name, no_item_name, item_name, item_description, due_date
   #If conditions are ok, create the list

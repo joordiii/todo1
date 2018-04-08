@@ -86,10 +86,10 @@ class List < Sequel::Model
   end
 end
 
-class Item < Sequel::Model 
-  set_primary_key :id                            
+class Item < Sequel::Model
+  set_primary_key :id
  
-  many_to_one :user 
+  many_to_one :user
   many_to_one :list 
 
   def self.new_item name, items, user, no_name, no_item_name, item_name, item_description, due_date
@@ -97,7 +97,6 @@ class Item < Sequel::Model
     list = List.new(name: name, created_at: Time.now)
     items.each_with_index do |item, elem|
       @it = Item.new(name: item_name, description: item_description, created_at: Time.now, updated_at: Time.now, due_date: due_date)
-      #binding.pry
       case 
         when list.valid? == false && @it.valid? == false
           no_name = true
@@ -110,7 +109,6 @@ class Item < Sequel::Model
           no_item_name = false
           list_name = name
           item_name = item_name
-          #binding.pry
           break
         when list.valid? == true && @it.valid? == false
           no_name = false
@@ -124,7 +122,6 @@ class Item < Sequel::Model
           list_name = name
           item_name = item_name
           ok += 1
-          #binding.pry
       end
     end
     return ok
