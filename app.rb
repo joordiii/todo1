@@ -127,8 +127,6 @@ get '/lists/:id' do
   #@sorted_list = @list.items.sort_by { |k| k[:checked] ? 0 : 1 }
   #@sorted_list = @list.items_dataset.select_order_map(:checked).reverse
   @sorted_list = @list.items_dataset.order(Sequel.desc(:checked))
-  #binding.pry
-
   slim :slist_details, locals: { lists: all_lists }
 end
 

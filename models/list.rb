@@ -1,6 +1,6 @@
 require 'sequel' 
-Sequel::Model.plugin :validation_helpers 
 class List < Sequel::Model 
+  plugin :validation_helpers
   set_primary_key :id 
  
   one_to_many :items 
@@ -15,11 +15,6 @@ class List < Sequel::Model
     permissions.each(&:destroy)
     super
   end 
-
-  def before_update
-    p "Heiiii"
-  end
-
 
   def self.new_list name
     list = List.new(name: name, created_at: Time.now)
@@ -87,6 +82,7 @@ class List < Sequel::Model
 end
 
 class Item < Sequel::Model 
+  plugin :validation_helpers
   set_primary_key :id                            
  
   many_to_one :user 
@@ -104,7 +100,7 @@ class Item < Sequel::Model
           no_item_name = true
           list_name = name
           item_name = item_name
-          break
+          return @it
         when list.valid? == false && @it.valid? == true
           no_name = true
           no_item_name = false
