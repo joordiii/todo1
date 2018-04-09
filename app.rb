@@ -8,6 +8,7 @@ require 'pry-byebug'
 require 'yaml'
 require 'digest'
 require 'slim'
+require 'set'
 class Todo < Sinatra::Application # We inherit the Application class of the Sinatra Module
   # We can config every environment, if only this one is present it will work for all
   set :environment, :development #ENV['RACK_ENV']
@@ -67,23 +68,53 @@ post '/new/?' do
   due_date = params[:items][0][:due_date]
   #list = List.new_list params[:name], params[:items], @user
   list = List.new_list list_name
-  ok_to_save = Item.new_item list_name, array_items, @user, no_name, no_item_name, item_name, item_description, due_date
+  list.valid?
+  #binding.pry
+  returning_values = Item.new_item list, array_items, @user, no_name, no_item_name, 
+  item_name, item_description, due_date
+  #binding.pry
   #If conditions are ok, create the list
-  if ok_to_save == params[:items].length
-    list = List.create_list list_name, array_items, @user
-    redirect "/lists/#{list.id}"
-  else
-    error_list = list.errors
-    #binding.pry
-    # To prevent errors passing variables to slim
-    error_list.empty? ? error_list = {:name=>["","",""]} : error_list = list.errors
-    error_items = @it.errors
-    #in case of errors render the same form with error messages
-    slim :snew_list, locals: {no_name: no_name, no_item_name: no_item_name, 
-      list_name: list_name, item_name: item_name, 
-      error_list_empty: error_list[:name][0], error_list_format: error_list[:name][1],
-      error_list_uniqueness: error_list[2], error_items: error_items[:name][0]} 
-    end
+  #if returning_values[0] != nil && returning_values[0][0] == params[:items].length
+  case returning_values[0]
+    when 1
+      list = List.create_list list_name, array_items, @user
+      redirect "/lists/#{list.id}"
+    when "No errors"
+      #binding.pry
+      error_list = list.errors
+      error_list2 = Set.new ["Name can't be empty", "should begin with a character"]
+      unless error_list2.include? 'Name shold be unique'
+        error_list[:name].push("")
+      end
+      
+      # To prevent errors passing variables to slim
+      error_list.empty? ? error_list = {:name=>["","",""]} : error_list = list.errors
+      returning_values[0][0] = nil ? error_items = "" : error_items = returning_values[0][0]
+      #error_items.empty? ? error_items = {:name=>[""]} : error_items = returning_values[0].errors
+      #in case of errors render the same form with error messages
+      slim :snew_list, locals: {no_name: returning_values[1], no_item_name: returning_values[2], 
+        list_name: returning_values[3], item_name: returning_values[4], 
+        error_list_empty: error_list[:name][0], error_list_format: error_list[:name][1],
+        error_list_uniqueness: error_list[:name][2], error_items: error_items}
+      when ["Item can't be empty"]
+        #binding.pry
+        error_list = list.errors
+=begin error_list2 = Set.new ["Name can't be empty", "should begin with a character"]
+unless error_list2.include? 'Name shold be unique'
+  error_list[:name].push("")
+end 
+=end
+        
+        # To prevent errors passing variables to slim
+        error_list.empty? ? error_list = {:name=>["","",""]} : error_list = list.errors
+        returning_values[0][0] = nil ? error_items = "" : error_items = returning_values[0][0]
+        #error_items.empty? ? error_items = {:name=>[""]} : error_items = returning_values[0].errors
+        #in case of errors render the same form with error messages
+        slim :snew_list, locals: {no_name: returning_values[1], no_item_name: returning_values[2], 
+          list_name: returning_values[3], item_name: returning_values[4], 
+          error_list_empty: error_list[:name][0], error_list_format: error_list[:name][1],
+          error_list_uniqueness: error_list[:name][2], error_items: error_items} 
+  end
 end
 
 post '/update/?' do

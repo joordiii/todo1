@@ -1,4 +1,5 @@
 require 'sequel' 
+require 'set'
 class List < Sequel::Model 
   plugin :validation_helpers
   set_primary_key :id 
@@ -73,8 +74,8 @@ class List < Sequel::Model
  
   def validate
     super
-    errors.add(:name, 'Name cannot be empty') if !name || name.empty?
-    errors.add(:created_at, 'cannot be empty') if !created_at
+    validates_presence [:name], message: "Name can't be empty"
+    errors.add(:created_at, 'cannot be empty') unless created_at
     #validates_presence [:name, :created_at]
     validates_unique :name, message: 'Name shold be unique'
     validates_format /\A[A-Za-z]/, :name, message: 'should begin with a character'
@@ -88,42 +89,49 @@ class Item < Sequel::Model
   many_to_one :user 
   many_to_one :list 
 
-  def self.new_item name, items, user, no_name, no_item_name, item_name, item_description, due_date
+  def self.new_item list, items, user, no_name, no_item_name, item_name, item_description, due_date
     ok = 0
-    list = List.new(name: name, created_at: Time.now)
+    returning_values = []
+    #list = List.new(name: name, created_at: Time.now)
     items.each_with_index do |item, elem|
       @it = Item.new(name: item_name, description: item_description, created_at: Time.now, updated_at: Time.now, due_date: due_date)
       #binding.pry
       case 
         when list.valid? == false && @it.valid? == false
-          no_name = true
-          no_item_name = true
-          list_name = name
-          item_name = item_name
-          return @it
-        when list.valid? == false && @it.valid? == true
-          no_name = true
-          no_item_name = false
-          list_name = name
-          item_name = item_name
-          #binding.pry
-          break
-        when list.valid? == true && @it.valid? == false
-          no_name = false
-          no_item_name = true
-          list_name = name
-          item_name = item_name
-          break
-        else
-          no_name = false
-          no_item_name = false
-          list_name = name
-          item_name = item_name
-          ok += 1
-          #binding.pry
+            no_name = true
+            no_item_name = true
+            list_name = list[:name]
+            item_name = item_name
+            returning_values << @it.errors[:name] << no_name << no_item_name << list_name << item_name
+            return returning_values
+          when list.valid? == false && @it.valid? == true
+            no_name = true
+            no_item_name = false
+            list_name = list[:name]
+            item_name = item_name
+            if @it.errors[:name] == nil
+              @it.errors[:name] = 'No errors'
+            end
+            returning_values << @it.errors[:name] << no_name << no_item_name << list_name << item_name
+            return returning_values
+          when list.valid? == true && @it.valid? == false
+            #binding.pry
+            no_name = false
+            no_item_name = true
+            list_name = list[:name]
+            item_name = item_name
+            returning_values << @it.errors[:name] << no_name << no_item_name << list_name << item_name
+            return returning_values
+          else
+            no_name = false
+            no_item_name = false
+            list_name = list[:name]
+            item_name = item_name
+            ok += 1
+            #binding.pry
+            return ok
       end
     end
-    return ok
   end
 
 
