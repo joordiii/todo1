@@ -1,24 +1,10 @@
 html
   head
-    title ToDo
-    script src="/js/jquery-3.3.1.min.js"
-    script src="/js/bootstrap.min.js"
-    link rel="stylesheet" href="../css/custom.css"
-    link rel="stylesheet" href="../css/bootstrap.min.css"
-    link rel="stylesheet" href="../css/bootstrap-theme.min.css"
-    link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans|Roboto+Mono" 
-    //link rel="stylesheet" href="/css/bootstrap.min.css"
-    //link rel="stylesheet" href="/css/bootstrap-theme.min.css"
-
-    css:
-      .has-below {
-        padding-bottom: 20px;
-      }
-
-      span {
-        font-family: Arial, Helvetica, sans-serif;
-      }
-
+    == title_tag()
+    == path_to(:jquery)
+    == path_to(:bootstrapjs)
+    == webfonts('PT Sans', 'Roboto Mono')
+    == styles()
   body
     .container-fluid
       .col-md-12

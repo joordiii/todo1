@@ -59,6 +59,14 @@ body {
   background-color: #313d46;
 }
 
+.has-below {
+  padding-bottom: 20px;
+}
+
+span {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 .my-items {
   font-family: 'Roboto Mono', monospace;
 }
