@@ -15,8 +15,9 @@ class Todo < Sinatra::Application # We inherit the Application class of the Sina
   set :environment, ENV['RACK_ENV'].to_sym
   enable :sessions
   set :session_secret, '123123123123AAA123123123'
-  disable :protection
+  #disable :protection
   set :root, File.dirname(__FILE__)
+  set :show_exceptions, :after_handler
   #binding.pry
   # The option below prevents from appearing the error debugging page
   #set :show_exceptions, false

@@ -3,10 +3,13 @@ class Todo < Sinatra::Application
   # When typing '/' or '' we get all lists into a variable called all_lists  
   get '/?' do
     title('All Lists')
+    #send_file 'text_file.txt'
     all_lists = List.association_join(:permissions).where(user_id: @user.id)
     slim :slists, locals: {lists: all_lists, user: @user}
+    # slim :slists, locals: {lists: all_lists, user: @user}, :layout => :layout2 <- Example using a second layout
   end
-  get '/new/?' do
+
+    get '/new/?' do
     title('New List')
     # I can pass this two variables to load the js files
     # @js = "/js/jquery-3.3.1.min.js"

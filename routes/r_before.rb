@@ -8,4 +8,11 @@ class Todo < Sinatra::Application
     @user = User.first(id: session[:user_id]) if session[:user_id]
   end
 
+  error 404 do
+    slim :e404
+  end
+
+  get '/secret' do
+    404
+  end
 end
