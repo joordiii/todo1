@@ -1,9 +1,8 @@
+# frozen_string_literal: true
+
 class Todo < Sinatra::Application
-
-  #sequel queries to test
+  # sequel queries to test
   get '/test' do
-    ds = List[:name]
-    binding.pry
+    List[:name]
   end
-
 end

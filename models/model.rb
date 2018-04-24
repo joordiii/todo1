@@ -1,6 +1,8 @@
-require 'sequel' 
- 
-class Permission < Sequel::Model 
-  many_to_one :user 
-  many_to_one :list 
+# frozen_string_literal: true
+
+require 'sequel'
+
+class Permission < Sequel::Model
+  many_to_one :user
+  many_to_one :list
 end

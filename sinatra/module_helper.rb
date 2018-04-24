@@ -1,19 +1,19 @@
+
+
 require 'sinatra/base'
 
-module Sinatra 
-
+module Sinatra
   module CleanViewsCode
-
-    def title value=nil
-      @title = value || settings.value || "untitle"
+    def title(value=nil)
+      @title = value || settings.value || 'untitle'
     end
 
     def title_tag
-      @head="<head>"
+      @head = '<head>'
       @head << "<title>#{@title}</title>"
     end
 
-    def path_to script
+    def path_to(script)
       case script
       when :jquery then "<script src='/js/jquery-3.3.1.min.js'></script>"
       when :bootstrapjs then "<script src='/js/bootstrap.min.js'></script>"
@@ -25,8 +25,7 @@ module Sinatra
       arr = []
       fonts.each { |elem| arr << elem.gsub(/\s/,'+') }
       @my_fonts = arr.join('|')
-      return "<link href=\"https://fonts.googleapis.com/css?family=#{@my_fonts}\" rel=\"stylesheet\" />"
-      #binding.pry
+      "<link href=\"https://fonts.googleapis.com/css?family=#{@my_fonts}\" rel=\"stylesheet\" />"
     end
 
     def styles
@@ -35,9 +34,7 @@ module Sinatra
         "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/#{File.basename(file)}\">"
       end.join
     end
-
   end
 
   helpers CleanViewsCode
-
 end
