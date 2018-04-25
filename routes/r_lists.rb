@@ -23,12 +23,13 @@ class Todo < Sinatra::Application
     list_name = ''
     item_name = ''
     @time_min = Time.now.to_s[0..-16]
+    due_date = ''
     #arrayitems = [1]
     total_errors = [['', '', ''],[['', '', '', '', '']]]
     first_time = true
     # slim :snew_list, locals: { time_now: @time_min, no_name: no_name, no_item_name: no_item_name,
     #                            list_name: list_name, item_name: item_name, arrayitems: arrayitems }
-    slim :snew_list, locals: { total_errors: total_errors, first_time: first_time }
+    slim :snew_list, locals: { total_errors: total_errors, first_time: first_time, due_date: due_date }
   end
   post '/new/?' do
     list_name = params[:name]
@@ -44,13 +45,14 @@ class Todo < Sinatra::Application
     list_errors = list.errors
     if list_errors == {}
       full_list_errors = ['', '', '']
+    elsif !list_errors[:name].include? 'Name shold be unique'
+      full_list_errors = list_errors[:name].push('')
     else
-      full_list_errors = list_errors[:name].push('') unless list_errors[:name].include? 'Name shold be unique'
+      full_list_errors = list_errors[:name].unshift('')
+      full_list_errors = full_list_errors.unshift('')
     end
-    returning_values = Item.new_item list, array_items, @user, no_name, no_item_name,
-    due_date
-    checkingstatus = Item.checkstatus list, array_items, @user, no_name, no_item_name,
-    due_date
+    returning_values = Item.new_item list, array_items, @user, no_name, no_item_name, due_date
+    checkingstatus = Item.checkstatus list, array_items, @user, no_name, no_item_name, due_date
     #binding.pry
 
     if checkingstatus == 'ok'
@@ -60,10 +62,12 @@ class Todo < Sinatra::Application
     total_errors = []
     total_errors << full_list_errors << returning_values
     first_time = false
-    slim :snew_list, locals: { total_errors: total_errors, first_time: first_time }
+    slim :snew_list, locals: { total_errors: total_errors, first_time: first_time, due_date: due_date }
   end
   
   post '/update/?' do
+    #binding.pry
+    List.edit_list params[:lists][0][:id], params[:lists][0][:name], params[:items], @user
     # list_name = params[:lists][0]['name']
     list_id = params[:lists][0][:id].to_i
     # list = List.edit_list list_id, list_name, params[:items], @user
@@ -107,6 +111,7 @@ class Todo < Sinatra::Application
   end
 
   get '/edit/:id/?' do
+    #binding.pry
     list = List.first(id: params[:id])
     can_edit = true
     time_min = Time.now.to_s[0..-16]
@@ -126,7 +131,7 @@ class Todo < Sinatra::Application
   # Here, we do not require the id to be in the URL as the POST data will have it.
   post '/edit/?' do
     @user = User.first(id: session[:user_id])
-    List.edit_list params[:id], params[:name], params[:items], @user 
+    List.edit_list params[:id], params[:name], params[:items], @user
     redirect request.referer
   end
 end

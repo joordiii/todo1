@@ -151,7 +151,8 @@ class Item < Sequel::Model
     count = 0
     #binding.pry
     returning_values.each do |elem|
-      if elem[3] && elem[4] != ''
+      #binding.pry
+      if elem[3] != '' && elem[4] != ''
         count += 1
       else
         'not valid'

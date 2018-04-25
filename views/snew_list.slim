@@ -8,7 +8,7 @@
         .form-group
           label.control-label.col-md-4 for="name" List Name
           /- binding.pry
-          - if total_errors[1][0][3] == '' && first_time == false # if no_name (no list name) 
+          - if ( total_errors[0][0] != '' || total_errors[0][1] != '' || total_errors[0][2] != '' ) && first_time == false # if no_name (no list name) 
             .col-md-8
               input.form-control.has-error type="text" name="name" value="#{total_errors[1][0][3]}"
               - if total_errors[0][0] != ''   # error_list_empty
@@ -40,7 +40,7 @@
             .col-md-8
               textarea.form-control type="text" name="items[][description]" placeholder="Item description"
             .col-md-4
-              input.form-control type="date" name="items[][due_date]" min="#{@time_now}"
+              input.form-control type="date" name="items[][due_date]" min="#{@time_min}" value="#{due_date}"
           #items_list.form-group
             a href='javascript:void(0)' id='add-item' class='col-md-3' Add Item
         hr
