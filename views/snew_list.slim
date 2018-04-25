@@ -7,9 +7,10 @@
       form.form-horizontal name="list" method="post" action=url("/new")
         .form-group
           label.control-label.col-md-4 for="name" List Name
-          - if total_errors[1][0][0] != ''  # if no_name (no list name) 
+          /- binding.pry
+          - if total_errors[1][0][3] == '' && first_time == false # if no_name (no list name) 
             .col-md-8
-              input.form-control.has-error type="text" name="name"
+              input.form-control.has-error type="text" name="name" value="#{total_errors[1][0][3]}"
               - if total_errors[0][0] != ''   # error_list_empty
                 .err_message * #{total_errors[0][0]} 
               - if total_errors[0][1] != ''  # error_list_format
@@ -20,12 +21,11 @@
           - else
             .col-md-8
               //value="#{total_errors[1][1][1]}" <-- list_name
-              input.form-control type="text" name="name" value="#{total_errors[1][0][0]}"
+              input.form-control type="text" name="name" value="#{total_errors[1][0][3]}"
               /- binding.pry
         hr
         - total_errors[1].each_with_index do |elem, index|
           .form-group.item-group
-            /- binding.pry
             - if elem[4] == '' && first_time == false # no item name  and no first_time  
               .col-md-4
                 / no_item_name == true
