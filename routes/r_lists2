@@ -23,12 +23,9 @@ class Todo < Sinatra::Application
     list_name = ''
     item_name = ''
     @time_min = Time.now.to_s[0..-16]
-    #arrayitems = [1]
-    total_errors = [['', '', ''],[['', '', '', '', '']]]
-    first_time = true
-    # slim :snew_list, locals: { time_now: @time_min, no_name: no_name, no_item_name: no_item_name,
-    #                            list_name: list_name, item_name: item_name, arrayitems: arrayitems }
-    slim :snew_list, locals: { total_errors: total_errors, first_time: first_time }
+    arrayitems = [1]
+    slim :snew_list, locals: { time_now: @time_min, no_name: no_name, no_item_name: no_item_name,
+                               list_name: list_name, item_name: item_name, arrayitems: arrayitems }
   end
   post '/new/?' do
     list_name = params[:name]
@@ -41,28 +38,65 @@ class Todo < Sinatra::Application
     # list = List.new_list params[:name], params[:items], @user
     list = List.new_list list_name
     list.valid?
-    list_errors = list.errors
-    if list_errors == {}
-      full_list_errors = ['', '', '']
-    else
-      full_list_errors = list_errors[:name].push('') unless list_errors[:name].include? 'Name shold be unique'
-    end
     returning_values = Item.new_item list, array_items, @user, no_name, no_item_name,
-    due_date
-    checkingstatus = Item.checkstatus list, array_items, @user, no_name, no_item_name,
-    due_date
-    #binding.pry
-
-    if checkingstatus == 'ok'
+                                     due_date
+    # If conditions are ok, create the list
+    # if returning_values[0] != nil && returning_values[0][0] == params[:items].length
+    case returning_values[0][0]
+    when 'No errors'
       list = List.create_list list_name, array_items, @user
       redirect "/lists/#{list.id}"
+    when 'No item errors but list errors'
+      binding.pry
+      error_list = list.errors
+      error_list2 = Set.new ["Name can't be empty", 'should begin with a character']
+      error_list[:name].push('') unless error_list2.include? 'Name shold be unique'
+      # To prevent errors passing variables to slim
+      # error_list.empty? ? error_list = {:name=>["","",""]} : error_list = list.errors
+      # error_list = if error_list.empty?
+      #                { name: ['', '', ''] }
+      #              else
+      #                list.errors
+      #              end
+      error_list = list.errors
+      # returning_values[0][0] = nil ? error_items = "" : error_items = returning_values[0][0]
+      # error_items = if returning_values[0][0].nil?
+      #                 ''
+      #               else
+      #                 returning_values[0][0]
+      #               end
+      error_items = ''
+      # error_items.empty? ? error_items = {:name=>[""]} : error_items = returning_values[0].errors
+      # in case of errors render the same form with error messages
+      slim :snew_list, locals: { no_name: returning_values[0][1], no_item_name: returning_values[2],
+                                 list_name: returning_values[0][3], item_name: returning_values[4],
+                                 error_list_empty: error_list[:name][0], error_list_format: error_list[:name][1],
+                                 error_list_uniqueness: error_list[:name][2], error_items: error_items }
+    when ["Item name can't be empty"]
+      error_list = list.errors
+      # To prevent errors passing variables to slim
+      # error_list.empty? ? error_list = {:name=>["","",""]} : error_list = list.errors
+      error_list = if error_list.empty?
+                     { name: ['', '', ''] }
+                   else
+                     list.errors
+                   end
+      # returning_values[0][0] = nil ? error_items = "" : error_items = returning_values[0][0]
+      error_items = if returning_values[0][0].nil?
+                      ''
+                    else
+                      returning_values[0][0]
+                    end
+
+      # error_items.empty? ? error_items = {:name=>[""]} : error_items = returning_values[0].errors
+      # in case of errors render the same form with error messages
+      slim :snew_list, locals: { no_name: returning_values[1], no_item_name: returning_values[2],
+                                 list_name: returning_values[3], item_name: returning_values[4],
+                                 error_list_empty: error_list[:name][0], error_list_format: error_list[:name][1],
+                                 error_list_uniqueness: error_list[:name][2], error_items: error_items }
     end
-    total_errors = []
-    total_errors << full_list_errors << returning_values
-    first_time = false
-    slim :snew_list, locals: { total_errors: total_errors, first_time: first_time }
   end
-  
+
   post '/update/?' do
     # list_name = params[:lists][0]['name']
     list_id = params[:lists][0][:id].to_i

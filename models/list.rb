@@ -90,49 +90,81 @@ class Item < Sequel::Model
   many_to_one :user
   many_to_one :list
 
-  def self.new_item(list, items, _user, no_name, no_item_name, item_name, item_description, due_date)
+  def self.new_item(list, items, _user, no_name, no_item_name, due_date)
     ok = 0
-    returning_values = []
+    returning_values =[] 
     # list = List.new(name: name, created_at: Time.now)
-    items.each_with_index do
-      # binding.pry
-      @it = Item.new(name: item_name, description: item_description, created_at: Time.now,
+    #binding.pry
+    items.each_with_index do |_elem, index|
+      #binding.pry
+      @it = Item.new(name: items[index][:name], description: items[index][:description], created_at: Time.now,
                      updated_at: Time.now, due_date: due_date)
       case list.valid? == true || list.valid? == false
       when list.valid? == false && @it.valid? == false
+        single_item_values = []
         no_name = true
         no_item_name = true
         list_name = list[:name]
-        item_name = item_name
-        returning_values << @it.errors[:name] << no_name << no_item_name << list_name << item_name
-        return returning_values
+        item_name = items[index][:name]
+        single_item_values << @it.errors[:name][0] << no_name << no_item_name << list_name << item_name
+        returning_values << single_item_values
+      #binding.pry
       when list.valid? == false && @it.valid? == true
+        single_item_values = []
         no_name = true
         no_item_name = false
         list_name = list[:name]
-        item_name = item_name
-        @it.errors[:name] = 'No errors' if @it.errors[:name].nil?
-        returning_values << @it.errors[:name] << no_name << no_item_name << list_name << item_name
-        return returning_values
+        item_name = items[index][:name]
+        @it.errors[:name] = '' if @it.errors[:name].nil?
+        single_item_values << @it.errors[:name] << no_name << no_item_name << list_name << item_name
+        returning_values << single_item_values
       when list.valid? == true && @it.valid? == false
+        single_item_values = []
         no_name = false
         no_item_name = true
         list_name = list[:name]
-        item_name = item_name
-        returning_values << @it.errors[:name] << no_name << no_item_name << list_name << item_name
-        return returning_values
+        item_name = items[index][:name]
+        single_item_values << @it.errors[:name][0] << no_name << no_item_name << list_name << item_name
+        returning_values << single_item_values
       else
+        # no_name = false
+        # no_item_name = false
+        # item_name = item_name
+        # ok += 1
+        # return ok
+        single_item_values = []
         no_name = false
         no_item_name = false
-        # list_name = list[:name]
-        item_name = item_name
-        ok += 1
-        return ok
+        list_name = list[:name]
+        item_name = items[index][:name]
+        @it.errors[:name] = '' if @it.errors[:name].nil?
+        single_item_values << @it.errors[:name] << no_name << no_item_name << list_name << item_name
+        returning_values << single_item_values
+        #binding.pry
       end
     end
+    returning_values
+  end
+
+  def self.checkstatus(list, items, _user, no_name, no_item_name, due_date)
+    returning_values = new_item(list, items, _user, no_name, no_item_name, due_date)
+    count = 0
+    #binding.pry
+    returning_values.each do |elem|
+      if elem[3] && elem[4] != ''
+        count += 1
+      else
+        'not valid'
+      end
+    end
+    return 'ok' if count == returning_values.length
+    return 'not valid' if count != returning_values.length
+    #binding.pry
   end
 
   def validate
-    validates_presence [:name], message: "Item can't be empty"
+    super
+    validates_presence [:name], message: "Item name can't be empty"
+    errors.add(:created_at, 'cannot be empty') unless created_at
   end
 end

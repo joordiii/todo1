@@ -1,0 +1,61 @@
+.col-md-8.col-md-offset-2
+  .has-below
+  .panel.panel-primary
+    .panel-heading
+      h3.panel-title Create List
+    .panel-body
+      form.form-horizontal name="list" method="post" action=url("/new")
+        .form-group
+          label.control-label.col-md-4 for="name" List Name
+          - if no_name == true 
+            .col-md-8
+              input.form-control.has-error type="text" name="name"
+              - if error_list_empty != nil
+                .err_message * #{error_list_empty} 
+              - if error_list_format != nil
+                .err_message * Format: #{error_list_format}
+              - if error_list_uniqueness != nil
+                .err_message * Uniqueness: #{error_list_uniqueness}
+          - else
+            .col-md-8
+              //input.form-control type="text" name="name" placeholder="#{list_name}"
+              input.form-control type="text" name="name" value="#{list_name}"
+        hr
+        .form-group.item-group
+          - if no_item_name    
+            .col-md-4
+              - no_item_name == true ? input_class = "form-control has-error" : input_class="form-control"
+              input class="#{input_class}" type="text" name="items[][name]" value="#{item_name}"
+              - if error_items != nil
+                .err_message * #{error_items}
+          - else
+            .col-md-4
+              input.form-control type="text" name="items[][name]" value="#{item_name}"
+          .col-md-8
+            textarea.form-control type="text" name="items[][description]" placeholder="Item description"
+          .col-md-4
+            input.form-control type="date" name="items[][due_date]" min="#{@time_now}"
+        #items_list.form-group
+          a href='javascript:void(0)' id='add-item' class='col-md-3' Add Item
+        hr
+        .form-group
+          .col-md-2.col-md-offset-3
+            button.btn.btn-sm.btn-primary type="submit"
+              i.glyphicon.glyphicon-ok 
+              Create
+
+script type="text/template" id='item_template'
+  .form-group.item-group
+    .col-md-4
+      input.form-control type="text" name="items[][name]" placeholder="Item name"
+    .col-md-8
+      textarea.form-control type="text" name="items[][description]" placeholder="Item description"
+    .col-md-4
+      input.form-control type="date" name="items[][due_date]" min="#{@time_now}"  
+
+
+javascript:
+  $(document).on('click', '#add-item', function(){
+    var template_text = $('#item_template').html()
+    $('#items_list').before(template_text);
+  });
