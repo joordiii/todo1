@@ -36,24 +36,28 @@ class Todo < Sinatra::Application
     array_items = params[:items]
     no_name = false
     no_item_name = false
-    item_name = params[:items][0][:name]
-    item_description = params[:items][0][:description]
+    # item_name = params[:items][0][:name]
+    # item_description = params[:items][0][:description]
     due_date = params[:items][0][:due_date]
     # list = List.new_list params[:name], params[:items], @user
     list = List.new_list list_name
     list.valid?
+    # binding.pry
     list_errors = list.errors
     if list_errors == {}
       full_list_errors = ['', '', '']
-    elsif !list_errors[:name].include? 'Name shold be unique'
+    elsif (list_errors[:name].include? "Name can't be empty") && (list_errors[:name].include? 'should begin with a character')
       full_list_errors = list_errors[:name].push('')
+    elsif (list_errors[:name].include? 'should begin with a character') && (list_errors[:name].length == 1)
+      full_list_errors = list_errors[:name].push('')
+      full_list_errors = full_list_errors.unshift('')
     else
       full_list_errors = list_errors[:name].unshift('')
       full_list_errors = full_list_errors.unshift('')
     end
     returning_values = Item.new_item list, array_items, @user, no_name, no_item_name, due_date
     checkingstatus = Item.checkstatus list, array_items, @user, no_name, no_item_name, due_date
-    #binding.pry
+    # binding.pry
 
     if checkingstatus == 'ok'
       list = List.create_list list_name, array_items, @user
@@ -64,9 +68,8 @@ class Todo < Sinatra::Application
     first_time = false
     slim :snew_list, locals: { total_errors: total_errors, first_time: first_time, due_date: due_date }
   end
-  
+
   post '/update/?' do
-    #binding.pry
     List.edit_list params[:lists][0][:id], params[:lists][0][:name], params[:items], @user
     # list_name = params[:lists][0]['name']
     list_id = params[:lists][0][:id].to_i

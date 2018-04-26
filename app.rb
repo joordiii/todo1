@@ -21,6 +21,7 @@ class Todo < Sinatra::Application
   # disable :protection
   set :root, File.dirname(__FILE__)
   set :show_exceptions, :after_handler
+  # disable :show_exceptions
   # binding.pry
   # The option below prevents from appearing the error debugging page
   # set :show_exceptions, false
