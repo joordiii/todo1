@@ -3,7 +3,6 @@
 class Todo < Sinatra::Application
   get '/signup/?' do
     title('ToDo App')
-    User.count
     if session[:user_id].nil?
       slim :ssignup
     else

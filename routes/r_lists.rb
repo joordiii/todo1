@@ -12,12 +12,13 @@ class Todo < Sinatra::Application
     title('New List')
     @time_min = Time.now.to_s[0..-16]
     due_date = ''
-
     total_errors = [['', '', ''], [['', '', '', '', '']]]
     first_time = true
     slim :snew_list, locals: { total_errors: total_errors, first_time: first_time, due_date: due_date }
   end
+
   post '/new/?' do
+    binding.pry
     list_name = params[:name]
     array_items = params[:items]
     no_name = false
@@ -28,7 +29,8 @@ class Todo < Sinatra::Application
     list_errors = list.errors
     if list_errors == {}
       full_list_errors = ['', '', '']
-    elsif (list_errors[:name].include? "Name can't be empty") && (list_errors[:name].include? 'should begin with a character')
+    elsif (list_errors[:name].include? "Name can't be empty") &&
+          (list_errors[:name].include? 'should begin with a character')
       full_list_errors = list_errors[:name].push('')
     elsif (list_errors[:name].include? 'should begin with a character') && (list_errors[:name].length == 1)
       full_list_errors = list_errors[:name].push('')
@@ -40,7 +42,6 @@ class Todo < Sinatra::Application
     returning_values = Item.new_item list, array_items, @user, no_name, no_item_name, due_date
     checkingstatus = Item.checkstatus list, array_items, @user, no_name, no_item_name, due_date
 
-    binding.pry
     if checkingstatus == 'ok'
       list = List.create_list list_name, array_items, @user
       # Log.create(user_id: @user.id, list_id: list.id, log_line: "#{list.name.upcase} list created", created_at: Time.now)
@@ -87,9 +88,11 @@ class Todo < Sinatra::Application
   end
 
   get '/edit/:id/?' do
+    #binding.pry
     list = List.first(id: params[:id])
     can_edit = true
     time_min = Time.now.to_s[0..-16]
+    title("Edit #{list.name}")
     if list.nil?
       can_edit = false
     elsif list.shared_with == 'public'
