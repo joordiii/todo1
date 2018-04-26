@@ -18,7 +18,6 @@ class Todo < Sinatra::Application
   end
 
   post '/new/?' do
-    binding.pry
     list_name = params[:name]
     array_items = params[:items]
     no_name = false
@@ -54,6 +53,7 @@ class Todo < Sinatra::Application
     slim :snew_list, locals: { total_errors: total_errors, first_time: first_time, due_date: due_date }
   end
 
+  # Here, we do not require the id to be in the URL as the POST data will have it.
   post '/update/?' do
     List.edit_list params[:lists][0][:id], params[:lists][0][:name], params[:items], @user
     list_id = params[:lists][0][:id].to_i
@@ -88,7 +88,6 @@ class Todo < Sinatra::Application
   end
 
   get '/edit/:id/?' do
-    #binding.pry
     list = List.first(id: params[:id])
     can_edit = true
     time_min = Time.now.to_s[0..-16]
@@ -96,7 +95,7 @@ class Todo < Sinatra::Application
     if list.nil?
       can_edit = false
     elsif list.shared_with == 'public'
-      @user = User.first(id: session[:user_id])
+      #@user = User.first(id: session[:user_id])
       permission = Permission.first(list: list, user: @user)
       can_edit = false if permission.nil? || permission.permission_level == 'read_only'
     end
@@ -106,10 +105,10 @@ class Todo < Sinatra::Application
       haml :error, locals: { error: 'Invalid permissions' }
     end
   end
-  # Here, we do not require the id to be in the URL as the POST data will have it.
-  post '/edit/?' do
-    @user = User.first(id: session[:user_id])
-    List.edit_list params[:id], params[:name], params[:items], @user
-    redirect request.referer
-  end
+  # # Here, we do not require the id to be in the URL as the POST data will have it.
+  # post '/edit/?' do
+  #   #@user = User.first(id: session[:user_id])
+  #   List.edit_list params[:id], params[:name], params[:items], @user
+  #   redirect request.referer
+  # end
 end

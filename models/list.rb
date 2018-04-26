@@ -14,6 +14,7 @@ class List < Sequel::Model
     comms.each(&:destroy)
     items.each(&:destroy)
     permissions.each(&:destroy)
+    logs.each(&:destroy)
     super
   end
 
