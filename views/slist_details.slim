@@ -21,8 +21,7 @@
                 |  Priority item
             .inner-item
               ul
-                li.color-des = item.description
-                //li.color-des = "This is #{item.checked}"
+                li.color-des = item.description 
         - if item.checked == false
           .back-item-false
             .name-star
@@ -32,7 +31,6 @@
             .inner-item
               ul
                 li.color-des = item.description
-                //li.color-des = "This is #{item.checked}"
     form action="http://localhost:4567/edit/#{@list.id}"
       .button-div
         input.reset-button1 type="submit" value="Edit List | Add Comments"
@@ -51,20 +49,8 @@
             - if Time.now < com.del_date
               form method="post" action=url("/delcomm") style="margin: 0;"
                 .button-div id="b-div"
-                  //i.glyphicon.glyphicon-remove
                   input.form-control type="hidden" name="comm_id" value="#{com.id}"
-                  //input.form-control id="del" type="hidden" name="comm_del" value="#{com.del_date}"
                   input.reset-button3 type="submit" value="x"
           .color = com.comm
 
-//javascript:
-  function hide() {
-    var x = document.getElementById("b-div");
-    var y = document.getElementById('del').value
-    if (x.style.display === "none") && (y.value < {
-        x.style.display = "block";
-    } else {
-        x.style.display = "none";
-    }
-  } 
           

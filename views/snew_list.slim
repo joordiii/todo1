@@ -7,7 +7,6 @@
       form.form-horizontal name="list" method="post" action=url("/new")
         .form-group
           label.control-label.col-md-4 for="name" List Name
-          /- binding.pry
           - if ( total_errors[0][0] != '' || total_errors[0][1] != '' || total_errors[0][2] != '' ) && first_time == false # if no_name (no list name) 
             .col-md-8
               input.form-control.has-error type="text" name="name" value="#{total_errors[1][0][3]}"
@@ -17,25 +16,20 @@
                 .err_message * Format: #{total_errors[0][1]}
               - if total_errors[0][2] != ''  # error_list_uniqueness
                 .err_message * Uniqueness: #{total_errors[0][2]}
-              /- binding.pry
           - else
             .col-md-8
-              //value="#{total_errors[1][1][1]}" <-- list_name
               input.form-control type="text" name="name" value="#{total_errors[1][0][3]}"
-              /- binding.pry
         hr
         - total_errors[1].each_with_index do |elem, index|
           .form-group.item-group
             - if elem[4] == '' && first_time == false # no item name  and no first_time  
               .col-md-4
-                / no_item_name == true
                 - elem[4] == '' ? input_class = "form-control has-error" : input_class="form-control"
                 input class="#{input_class}" type="text" name="items[][name]" value="#{elem[4]}"
                 - if elem[0] == "Item name can't be empty"
                   .err_message * Item name can't be empty
             - else
               .col-md-4
-                / value="#{item_name}"
                 input.form-control type="text" name="items[][name]" value="#{elem[4]}"
             .col-md-8
               textarea.form-control type="text" name="items[][description]" placeholder="Item description"

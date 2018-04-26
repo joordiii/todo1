@@ -3,13 +3,13 @@
 class Todo < Sinatra::Application
   post '/permission/?' do
     list = List.first(id: params[:id])
-    can_change_permission = tru
+    can_change_permission = true
 
     if list.nil?
       can_change_permission = false
     elsif list.shared_with != 'public'
       permission = Permission.first(list: list, user: @user)
-      can_change_permission = false if permission.nil? or permission.permission_level == 'read_only'
+      can_change_permission = false if permission.nil? || permission.permission_level == 'read_only'
     end
 
     if can_change_permission

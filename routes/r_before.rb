@@ -6,12 +6,4 @@ class Todo < Sinatra::Application
     # Before every route it sets the @user
     @user = User.first(id: session[:user_id]) if session[:user_id]
   end
-
-  error 404 do
-    slim :e404
-  end
-
-  get '/secret' do
-    404
-  end
 end

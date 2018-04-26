@@ -1,10 +1,8 @@
-
-
 require 'sinatra/base'
 
 module Sinatra
   module CleanViewsCode
-    def title(value=nil)
+    def title(value = nil)
       @title = value || settings.value || 'untitle'
     end
 
@@ -23,13 +21,13 @@ module Sinatra
 
     def webfonts(*fonts)
       arr = []
-      fonts.each { |elem| arr << elem.gsub(/\s/,'+') }
+      fonts.each { |elem| arr << elem.gsub(/\s/, '+') }
       @my_fonts = arr.join('|')
       "<link href=\"https://fonts.googleapis.com/css?family=#{@my_fonts}\" rel=\"stylesheet\" />"
     end
 
     def styles
-      a = Dir[File.join(settings.root,'public/css','*.css')]
+      a = Dir[File.join(settings.root, 'public/css', '*.css')]
       a.map do |file|
         "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/#{File.basename(file)}\">"
       end.join

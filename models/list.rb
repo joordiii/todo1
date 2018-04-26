@@ -33,26 +33,16 @@ class List < Sequel::Model
     list
   end
 
-  def self.edit_list id, name, items, user
-    # list = List.first(id: id)
+  def self.edit_list(id, name, items, user)
     list = List[id: id]
     list.name = name
-    # Uncomment the following line after:
-    # 1.- adding line 9 in 002_create_list_table.rb -> It add the column updated_at
-    # list.updated_at = Time.now
-    # 2.- then do a migration
-
     list.save
 
     items.each do |item|
       if item[:deleted]
-        # i = Item.first(item[:id]).destroy
         Item[item[:id].to_i]
         next
       end
-      # The Sequel::Model.[] is the easiest method to use to find a model 
-      # .. instance by its primary key value: ->Item[]<-
-      # http://sequel.jeremyevans.net/rdoc/files/doc/querying_rdoc.html
       i = Item[item[:id].to_i]
       if i.nil?
         Item.create(name: item[:name], description: item[:description], list: list,
@@ -68,7 +58,6 @@ class List < Sequel::Model
                         end
         i.checked = checked_value
         i.due_date = item[:due_date]
-        # i.checked = item[:checked].to_i
         i.save
       end
     end
@@ -78,8 +67,6 @@ class List < Sequel::Model
     super
     validates_presence [:name], message: "Name can't be empty"
     errors.add(:created_at, 'cannot be empty') unless created_at
-    # validates_presence [:name, :created_at]
-    # validates_unique :name, message: 'Name shold be unique'
     validates_format /\A[A-Za-z]/, :name, message: 'should begin with a character'
   end
 end
