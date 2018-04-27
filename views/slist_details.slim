@@ -7,7 +7,8 @@
           a href="http://localhost:4567/lists/#{list.id}"
             = list.name
   .list-list
-    h2.list-tit My #{@list.name} list
+    h2.list-tit 
+      .color-list >>> #{@list.name} list
     .my-items
       - @sorted_list.each do |item|
         - if item.checked == true

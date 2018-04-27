@@ -5,8 +5,9 @@ html
     == path_to(:bootstrapjs)
     == webfonts('PT Sans', 'Roboto Mono')
     == styles()
+    script src="/js/js.js"
   body
-    .container-fluid
+    .container-fluid class="pos"
       .col-md-12
         .row
           nav.navbar.navbar-inverse.navbar-fixed-top role='navigation'

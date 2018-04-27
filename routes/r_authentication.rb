@@ -21,7 +21,7 @@ class Todo < Sinatra::Application
     if session[:user_id].nil?
       slim :slogin
     else
-      slim :error, locals: { error: 'Please log out first' }
+      #slim :error, locals: { error: 'Please log out first' }
     end
   end
 
@@ -30,7 +30,7 @@ class Todo < Sinatra::Application
     md5sum = Digest::MD5.hexdigest params[:password]
     @user = User.first(name: params[:name], password: md5sum)
     if @user.nil?
-      slim :error, locals: { error: 'Invalid login credentials' }
+      slim :slogin, locals: { errorm: 'Invalid login credentials' }
     else
       @name = params[:name]
       session[:message] = "Successfully stored the name #{@name}."

@@ -46,6 +46,10 @@ body {
   font-size: 2em;
 }
 
+.color-list {
+  color: #c1f0cf;
+}
+
 .under {
   text-decoration: underline;
 }
@@ -56,7 +60,8 @@ body {
   width: 30%;
   padding: 5%;
   border-radius: 5px;
-  background-color: #313d46;
+  background-color: #415361;
+  /*background-color: #313d46;*/
 }
 
 .has-below {
@@ -347,4 +352,52 @@ label.check {
 
 .err_message {
   color: rgb(133, 27, 27);
+}
+
+.login-error {
+  color: rgb(133, 27, 27);
+}
+
+@media (max-width: 768px) {
+  .cont {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+  .list-gen {
+    color: whitesmoke;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    word-wrap: break-word;
+    width: 90%;
+    margin-bottom: 3%;
+    margin-top: 15%;
+    padding: 5%;
+    border-radius: 5px;
+    background-color: #313d46;
+  }
+  .list-list {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin-bottom: 3%;
+    padding: 5%;
+    border-radius: 5px;
+    background-color: #415361;
+  }
+  .list-com {
+    color: whitesmoke;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    word-wrap: break-word;
+    width: 90%;
+    padding: 5%;
+    border-radius: 5px;
+    background-color: #313d46;
+  }
 }
