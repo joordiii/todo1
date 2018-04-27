@@ -95,7 +95,6 @@ class Todo < Sinatra::Application
     if list.nil?
       can_edit = false
     elsif list.shared_with == 'public'
-      #@user = User.first(id: session[:user_id])
       permission = Permission.first(list: list, user: @user)
       can_edit = false if permission.nil? || permission.permission_level == 'read_only'
     end
@@ -105,10 +104,4 @@ class Todo < Sinatra::Application
       haml :error, locals: { error: 'Invalid permissions' }
     end
   end
-  # # Here, we do not require the id to be in the URL as the POST data will have it.
-  # post '/edit/?' do
-  #   #@user = User.first(id: session[:user_id])
-  #   List.edit_list params[:id], params[:name], params[:items], @user
-  #   redirect request.referer
-  # end
 end
