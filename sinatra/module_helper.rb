@@ -3,7 +3,7 @@ require 'sinatra/base'
 module Sinatra
   module CleanViewsCode
     def title(value = nil)
-      @title = value || settings.value || 'untitle'
+      @title = value || settings.set_title || 'untitle'
     end
 
     def title_tag

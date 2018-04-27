@@ -101,7 +101,7 @@ class Todo < Sinatra::Application
     if can_edit
       slim :sedit_list, locals: { list: list, time_now: time_min }
     else
-      haml :error, locals: { error: 'Invalid permissions' }
+      slim :error, locals: { error: 'Invalid permissions' }
     end
   end
 end

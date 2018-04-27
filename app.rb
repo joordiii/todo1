@@ -18,6 +18,7 @@ class Todo < Sinatra::Application
   set :session_secret, '123123123123AAA123123123'
   set :root, File.dirname(__FILE__)
   set :show_exceptions, :after_handler
+  set :set_title, 'Title'
 
   configure :development do
     register Sinatra::Reloader
